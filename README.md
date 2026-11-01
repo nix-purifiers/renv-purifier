@@ -102,6 +102,11 @@ loading the project library, `library()` calls, `renv::status()` and
 | `renv-purifier prefetch` | Builds the locked library with Nix and installs it as the project library (below). |
 | `renv-purifier publish <repository>` | Adds the release Nix built to the CRAN-like repository directory `<repository>`, and rewrites its `PACKAGES` index. |
 
+`renv-purifier lock` needs a `renv.lock`. renv writes `renv.lock` from the
+packages installed in the project library, so for a project without one,
+`lock` stops and names `renv::init()` and `renv::snapshot()`. Run one of
+them in the project, then run `lock`.
+
 After `renv::install()` and `renv::snapshot()` change `renv.lock`, rerun
 `renv-purifier lock`. Until then, Nix and `prefetch` refuse the stale
 lockfile and name that command.
