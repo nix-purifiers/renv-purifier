@@ -21,16 +21,33 @@ the builder and the commands look for the lockfiles there by default:
 nix run github:nix-purifiers/renv-purifier -- lock
 ```
 
-The flake's `overlays.default` adds one attribute to a package set, the
-scope `renv-purifier`. The scope holds the builder `buildRenvProject` and
-the command, and a package written for `callPackage` takes the scope by
-name:
+Then build the project from its directory, with no Nix file added to it:
 
-```nix
-# package.nix
-{ renv-purifier }:
-(renv-purifier.buildRenvProject { src = ./.; }).packages.env
+```zsh
+nix build --impure --expr '
+  let
+    purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
+    pkgs = import purifier.inputs.nixpkgs {
+      system = builtins.currentSystem;
+      overlays = [ purifier.overlays.default ];
+    };
+  in
+  (pkgs.renv-purifier.buildRenvProject { src = ./.; }).packages.env'
 ```
+
+This uses the purifier's pinned nixpkgs, matching the lock command above.
+To build with ambient `<nixpkgs>` from your Nix search path instead,
+replace `import purifier.inputs.nixpkgs` with `import <nixpkgs>`.
+Both forms need no Nix files in your project. The build tool and language
+versions must match the lockfile; with ambient nixpkgs, lock with the
+purifier from that package set or pass a compatible toolchain to the builder.
+
+The result is `result/bin/R`, with every locked package, and the project's
+own package when the project is one, on its library path.
+
+A project whose authors want a flake that packages it can keep one in the
+project's repository or in another repository. It calls the builder
+directly:
 
 ```nix
 # flake.nix
@@ -43,19 +60,19 @@ name:
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [
-          renv-purifier.overlays.default
-          (final: prev: { analysis = final.callPackage ./package.nix { }; })
-        ];
+        overlays = [ renv-purifier.overlays.default ];
       };
     in
     {
-      packages.${system}.default = pkgs.analysis;
+      packages.${system}.default =
+        (pkgs.renv-purifier.buildRenvProject { src = ./.; }).packages.env;
     };
 }
 ```
 
-`buildRenvProject` returns these attributes:
+The overlay `overlays.default` adds one attribute to a package set, the
+scope `renv-purifier`, which holds the builder `buildRenvProject` and the
+command. `buildRenvProject` returns these attributes:
 
 - `packages.env` holds `R` and `Rscript` in `bin`, with every locked
   package, and the project's own package when there is one, on their library
@@ -226,62 +243,32 @@ temporary directory, and the help pages R installs record that path.
 
 ## Examples
 
-### cransays, packaged from outside
+### r-hub/cransays
 
 [r-hub/cransays](https://github.com/r-hub/cransays) is the dashboard of
-packages waiting in CRAN's incoming queue. Its author keeps a `renv.lock`
-and does not use renv-purifier, so a packaging flake of your own keeps the
-purifier lockfile and builds cransays from its repository. cransays is a
-dashboard rather than an R package, so the flake builds its library and a
-shell with R and that library.
-
-```nix
-# flake.nix, in a directory of your own
-{
-  inputs.renv-purifier.url = "github:nix-purifiers/renv-purifier";
-  inputs.nixpkgs.follows = "renv-purifier/nixpkgs";
-  inputs.cransays = {
-    url = "github:r-hub/cransays";
-    flake = false;
-  };
-
-  outputs = { nixpkgs, renv-purifier, cransays, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [ renv-purifier.overlays.default ];
-      };
-      project = pkgs.renv-purifier.buildRenvProject {
-        src = cransays;
-        lockFile = ./cransays.lock.json;
-      };
-    in
-    {
-      packages.${system}.default = project.library;
-      devShells.${system}.default = pkgs.mkShell {
-        packages = [ pkgs.R ];
-        R_LIBS_SITE = "${project.library}/library";
-      };
-    };
-}
-```
-
-Lock cransays at the commit the flake pins, then build it and start R with
-its packages:
+packages waiting in CRAN's incoming queue, and it keeps a `renv.lock`. To
+get R with the packages it locks, clone it, lock it, and build its library
+from its directory:
 
 ```zsh
-nix flake lock
 git clone https://github.com/r-hub/cransays
-git -C cransays checkout "$(nix run 'nixpkgs#jq' -- -r .nodes.cransays.locked.rev flake.lock)"
-nix run github:nix-purifiers/renv-purifier -- lock --project cransays --lockfile cransays.lock.json
-git add flake.nix flake.lock cransays.lock.json
-nix build
-nix develop --command R
+cd cransays
+nix run github:nix-purifiers/renv-purifier -- lock
+nix build --impure --expr '
+  let
+    purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
+    pkgs = import purifier.inputs.nixpkgs {
+      system = builtins.currentSystem;
+      overlays = [ purifier.overlays.default ];
+    };
+  in
+  (pkgs.renv-purifier.buildRenvProject { src = ./.; }).interactive'
+R_LIBS_SITE="$PWD/result/library" result/R/bin/R
 ```
 
-After `nix flake update cransays`, check out the new commit and run the
-`lock` command again.
+cransays is a dashboard, not an R package, so the build asks for the
+`interactive` attribute, which holds an R and the library of the locked
+packages, in place of `packages.env`.
 
 ## Credits
 
