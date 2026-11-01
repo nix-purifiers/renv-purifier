@@ -30,19 +30,22 @@
 {
   lib,
   src,
+  # The purifier lockfile.
   lockFile,
+  # renv.lock, the copy in `src` or one kept outside it.
+  renvLock,
 }:
 let
   supportedVersion = import ./lock-version.nix;
 
-  renvLockPath = src + "/renv.lock";
+  renvLockPath = renvLock;
   hasRenvLock = builtins.pathExists renvLockPath;
   hasLockFile = builtins.pathExists lockFile;
 
   # A JSON file that does not parse fails evaluation here: builtins.fromJSON
   # raises an error that no Nix expression can catch, so this message is the
   # context of that error rather than one of `problems`.
-  renvLock =
+  renvLockData =
     if hasRenvLock then
       builtins.addErrorContext "while reading ${toString renvLockPath}, which is not valid JSON; look for merge conflict markers, fix it, or run renv::snapshot() again" (
         builtins.fromJSON (builtins.readFile renvLockPath)
@@ -75,10 +78,10 @@ let
     "tools"
     "utils"
   ];
-  records = removeAttrs (renvLock.Packages or { }) basePackages;
+  records = removeAttrs (renvLockData.Packages or { }) basePackages;
 
-  rVersion = renvLock.R.Version or null;
-  bioconductor = renvLock.Bioconductor.Version or null;
+  rVersion = renvLockData.R.Version or null;
+  bioconductor = renvLockData.Bioconductor.Version or null;
 
   isEntry =
     entry:
@@ -109,11 +112,11 @@ let
   fileProblems =
     if !hasRenvLock then
       [
-        "renv-purifier: ${toString src} has no renv.lock. Run renv::snapshot() in the project, then `renv-purifier lock`."
+        "renv-purifier: ${toString renvLockPath} does not exist. Run renv::snapshot() in the project, then `renv-purifier lock`."
       ]
     # renv.lock is parsed before anything else is compared, so a renv.lock
     # with merge conflict markers fails with its own message.
-    else if !builtins.isAttrs renvLock then
+    else if !builtins.isAttrs renvLockData then
       [
         "renv-purifier: ${toString renvLockPath} is not a renv lockfile. Fix it, or run renv::snapshot() again, then `renv-purifier lock`."
       ]

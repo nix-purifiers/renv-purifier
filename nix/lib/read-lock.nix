@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 #
-# `lib.renv-purifier.readLock { src, lockFile ? ... }`: renv.lock and
+# `lib.renv-purifier.readLock { src, lockFile ? ..., renvLock ? ... }`: renv.lock and
 # renv-purifier.lock.json read into the lock in memory of the purifier
 # contract (github:nix-purifiers/purifier, CONTRACT.md):
 #
@@ -25,9 +25,18 @@
 {
   src,
   lockFile ? src + "/renv-purifier.lock.json",
+  # renv.lock. A file outside `src` replaces the copy in it.
+  renvLock ? src + "/renv.lock",
 }:
 let
-  lock = import ./lock.nix { inherit lib src lockFile; };
+  lock = import ./lock.nix {
+    inherit
+      lib
+      src
+      lockFile
+      renvLock
+      ;
+  };
 in
 {
   purifier = "renv-purifier";

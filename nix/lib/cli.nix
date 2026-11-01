@@ -12,8 +12,8 @@
 #                repository
 #   shell        the shell `renv-purifier update` runs renv::update() in
 #
-# `lockFile`, when given, is the purifier lockfile to read in place of the
-# one in the project.
+# `lockFile` and `renvLock`, when given, are the purifier lockfile and the
+# renv.lock to read in place of the ones in the project.
 {
   nixpkgs,
   # A locked flake reference to github:nix-purifiers/purifier.
@@ -23,13 +23,17 @@
   # The purifier lockfile, as an absolute path, or null for the one in the
   # project.
   lockFile ? null,
+  # renv.lock, as an absolute path, or null for the one in the project.
+  renvLock ? null,
 }:
 let
   pkgs = import nixpkgs { };
   inherit (pkgs) lib;
   purifierLib = (builtins.getFlake purifier).lib.purifier;
   root = /. + src;
-  lockArgs = lib.optionalAttrs (lockFile != null) { lockFile = /. + lockFile; };
+  lockArgs =
+    lib.optionalAttrs (lockFile != null) { lockFile = /. + lockFile; }
+    // lib.optionalAttrs (renvLock != null) { renvLock = /. + renvLock; };
   readLock = import ./read-lock.nix { inherit lib; };
   buildRenvProject = pkgs.callPackage ./build-renv-project.nix { purifier = purifierLib; };
   built = buildRenvProject ({ src = root; } // lockArgs);

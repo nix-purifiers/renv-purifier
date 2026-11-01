@@ -5,7 +5,8 @@
 
 usage() {
   cat <<'EOF'
-Usage: renv-purifier <command> [--project <dir>] [--lockfile <path>] [arguments]
+Usage: renv-purifier <command> [--project <dir>] [--lockfile <path>]
+                     [--tool-lockfile <path>] [arguments]
 
   lock                  Write renv-purifier.lock.json for renv.lock as it is.
   update [<package>...] Update the packages with renv::update(), every package
@@ -20,7 +21,10 @@ Usage: renv-purifier <command> [--project <dir>] [--lockfile <path>] [arguments]
 
 --project is the directory that holds renv.lock, the current directory by
 default. --lockfile names a purifier lockfile kept outside the project; the
-environment variable RENV_PURIFIER_LOCKFILE does the same.
+environment variable RENV_PURIFIER_LOCKFILE does the same. --tool-lockfile,
+or RENV_PURIFIER_TOOL_LOCKFILE, names a renv.lock kept outside the project:
+lock and update write it there, starting from the project's renv.lock when
+it does not exist yet, and leave the project's renv.lock as it is.
 EOF
 }
 
@@ -38,6 +42,7 @@ shift
 
 project="."
 lockfile="${RENV_PURIFIER_LOCKFILE:-}"
+renvlock="${RENV_PURIFIER_TOOL_LOCKFILE:-}"
 inputs=""
 arguments=()
 while [ $# -gt 0 ]; do
@@ -50,6 +55,11 @@ while [ $# -gt 0 ]; do
   --lockfile)
     [ $# -ge 2 ] || die "--lockfile needs a path"
     lockfile="$2"
+    shift 2
+    ;;
+  --tool-lockfile)
+    [ $# -ge 2 ] || die "--tool-lockfile needs a path"
+    renvlock="$2"
     shift 2
     ;;
   --inputs)
@@ -75,13 +85,27 @@ if [ -n "$lockfile" ]; then
 else
   lockfile="$dir/renv-purifier.lock.json"
 fi
+if [ -n "$renvlock" ]; then
+  renvlock=$(realpath -m "$renvlock")
+else
+  renvlock="$dir/renv.lock"
+fi
 # The garbage-collector root of `prefetch`, beside the purifier lockfile.
 gcroots="$(dirname "$lockfile")/.renv-purifier"
 
 require_renv_lock() {
-  [ -f "$dir/renv.lock" ] || die "$dir has no renv.lock; run renv::init() or renv::snapshot() in the project, then renv-purifier lock"
-  jq empty "$dir/renv.lock" 2>/dev/null ||
-    die "$dir/renv.lock is not valid JSON (look for merge conflict markers); fix it, or run renv::snapshot() again"
+  [ -f "$renvlock" ] || die "$renvlock does not exist; run renv::init() or renv::snapshot() in the project, then renv-purifier lock"
+  jq empty "$renvlock" 2>/dev/null ||
+    die "$renvlock is not valid JSON (look for merge conflict markers); fix it, or run renv::snapshot() again"
+}
+
+# A renv.lock kept outside the project starts as a copy of the renv.lock in
+# the project.
+seed_renv_lock() {
+  if [ "$renvlock" != "$dir/renv.lock" ] && [ ! -e "$renvlock" ] && [ -f "$dir/renv.lock" ]; then
+    mkdir -p "$(dirname "$renvlock")"
+    cp "$dir/renv.lock" "$renvlock"
+  fi
 }
 
 nix_args=()
@@ -92,6 +116,7 @@ nix_setup() {
     --argstr purifier "$RENV_PURIFIER_LIBRARY"
     --argstr src "$dir"
     --argstr lockFile "$lockfile"
+    --argstr renvLock "$renvlock"
   )
 }
 
@@ -112,11 +137,12 @@ require_lock() {
 }
 
 lock() {
+  seed_renv_lock
   require_renv_lock
   mkdir -p "$(dirname "$lockfile")"
   # --vanilla keeps R from reading the .Rprofile of the working directory,
   # which in an renv project activates renv and runs project code.
-  Rscript --vanilla "$RENV_PURIFIER_SCRIPTS/lock.R" "$dir" "$lockfile" "$RENV_PURIFIER_FORMAT"
+  Rscript --vanilla "$RENV_PURIFIER_SCRIPTS/lock.R" "$dir" "$renvlock" "$lockfile" "$RENV_PURIFIER_FORMAT"
 }
 
 prefetch() {
@@ -157,22 +183,25 @@ lock)
   ;;
 
 update)
+  seed_renv_lock
   prefetch
   nix_setup
   # renv::update() installs the newer versions into the project library
   # from the repositories renv.lock names, compiling them with the
   # toolchain and system libraries of the locked build, and
-  # renv::snapshot() records them in renv.lock.
+  # renv::snapshot() records them in renv.lock, the one kept outside the
+  # project when there is one.
   (
     cd "$dir" || die "cannot enter $dir"
     # shellcheck disable=SC2016 # R code, expanded by R
     nix-shell "${nix_args[@]}" -A shell --run "$(printf '%q ' Rscript -e '
+      renvLock <- commandArgs(TRUE)[1]
       # renv::lockfile_read() gives the repositories as URLs by name.
-      options(repos = unlist(renv::lockfile_read("renv.lock")$R$Repositories))
-      packages <- commandArgs(TRUE)
+      options(repos = unlist(renv::lockfile_read(renvLock)$R$Repositories))
+      packages <- commandArgs(TRUE)[-1]
       renv::update(packages = if (length(packages)) packages else NULL, prompt = FALSE)
-      renv::snapshot(prompt = FALSE)
-    ' "${arguments[@]}")"
+      renv::snapshot(lockfile = renvLock, prompt = FALSE)
+    ' "$renvlock" "${arguments[@]}")"
   ) || die "renv::update() failed"
   lock
   ;;

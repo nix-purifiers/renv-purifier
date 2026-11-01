@@ -5,24 +5,24 @@
 # it, and writes renv-purifier.lock.json. It installs nothing: every package
 # is built later, in the Nix sandbox.
 #
-# Usage: Rscript lock.R <project directory> <lockfile> <lock format version>
+# Usage: Rscript lock.R <project directory> <renv.lock> <lockfile> <lock format version>
 
 script <- sub("^--file=", "", grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE))
 source(file.path(dirname(normalizePath(script)), "records.R"))
 
 args <- commandArgs(trailingOnly = TRUE)
 project <- normalizePath(args[[1]], mustWork = TRUE)
-lockPath <- args[[2]]
-formatVersion <- as.integer(args[[3]])
+renvLockPath <- args[[2]]
+lockPath <- args[[3]]
+formatVersion <- as.integer(args[[4]])
 
 fail <- function(...) {
   message("renv-purifier: ", sprintf(...))
   quit(status = 1)
 }
 
-renvLockPath <- file.path(project, "renv.lock")
 if (!file.exists(renvLockPath))
-  fail("%s has no renv.lock; run renv::snapshot() first", project)
+  fail("%s does not exist; run renv::snapshot() first", renvLockPath)
 renvLock <- tryCatch(
   jsonlite::read_json(renvLockPath),
   error = function(error) fail("%s is not valid JSON: %s", renvLockPath, conditionMessage(error))

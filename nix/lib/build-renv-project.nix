@@ -6,14 +6,16 @@
 #
 # The file is a package for callPackage: the first argument set is what it
 # takes from the package set, and the result is the builder. The
-# renv-purifier overlay (`overlays.default`) adds it to the package set as
-# `buildRenvProject`, so a package written for callPackage takes it like
-# any other dependency:
+# renv-purifier overlay (`overlays.default`) adds the scope `renv-purifier`
+# to the package set, and the scope holds the builder as
+# `buildRenvProject`, so a package written for callPackage takes the scope
+# by name:
 #
-#   { buildRenvProject }: (buildRenvProject { src = ./.; }).packages.env
+#   { renv-purifier }: (renv-purifier.buildRenvProject { src = ./.; }).packages.env
 #
-# and `buildRenvProject.override` replaces what it takes from the set, such
-# as `R`.
+# `renv-purifier.overrideScope` replaces what the scope shares, and
+# `renv-purifier.buildRenvProject.override` replaces what the builder takes
+# from the set, such as `R`.
 #
 # The builder fetches every locked package into an renv cellar
 # (cellar.nix), a directory renv reads source packages from before it
@@ -51,6 +53,10 @@
   unzip,
   fetchurl,
   fetchgit,
+  # What the purifier library builds with after a fetch.
+  zstd,
+  python3,
+  writeText,
   # The R that installs and runs the packages.
   R,
   # nixpkgs' R packages: the renv that runs the restore, and the system
@@ -62,12 +68,14 @@
   purifier,
 }:
 {
-  # The project root, which holds renv.lock and, unless `lockFile` names
-  # another path, renv-purifier.lock.json.
+  # The project root, which holds renv.lock and renv-purifier.lock.json
+  # unless `renvLock` or `lockFile` names another path.
   src,
   # The purifier lockfile. A file outside `src` replaces any copy in it,
   # so a packaging flake can build a project its author does not change.
   lockFile ? src + "/renv-purifier.lock.json",
+  # renv.lock. A file outside `src` replaces the copy in it.
+  renvLock ? src + "/renv.lock",
   # The fetchers of the shared library's fetchEntry, such as a `fetchurl`
   # that sends credentials or uses a company mirror.
   fetchers ? { },
@@ -86,14 +94,34 @@
   srcFilter ? null,
 }:
 let
-  read = import ./lock.nix { inherit lib src lockFile; };
+  read = import ./lock.nix {
+    inherit
+      lib
+      src
+      lockFile
+      renvLock
+      ;
+  };
   lock = purifier.checkLock {
     purifier = "renv-purifier";
     inherit (read) entries outputs problems;
   };
   entries = purifier.entriesFor stdenv.hostPlatform.system lock;
 
-  fetch = purifier.fetchEntry ({ inherit fetchurl fetchgit; } // fetchers);
+  fetch = purifier.fetchEntry (
+    {
+      inherit
+        fetchurl
+        fetchgit
+        runCommand
+        unzip
+        zstd
+        python3
+        writeText
+        ;
+    }
+    // fetchers
+  );
 
   # A package from a directory outside the project is found at the path its
   # renv.lock record names, from the project root, when `src` is a path
@@ -255,6 +283,7 @@ let
         options(install.opts = Sys.getenv("RENV_PURIFIER_INSTALL_OPTS"))
         renv::restore(
           project = getwd(),
+          lockfile = "${renvLock}",
           library = file.path(Sys.getenv("out"), "library"),
           prompt = FALSE,
           clean = FALSE
@@ -450,7 +479,7 @@ in
 # so a lock made with another R release builds as long as its packages
 # compile with this one. Old package versions sometimes do not.
 lib.warnIf (read.rVersion != null && majorMinor R.version != majorMinor read.rVersion)
-  "renv-purifier: renv.lock was made with R ${read.rVersion}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor read.rVersion} through buildRenvProject.override, or update the package with `renv-purifier update`."
+  "renv-purifier: renv.lock was made with R ${read.rVersion}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor read.rVersion} through renv-purifier.buildRenvProject.override, or update the package with `renv-purifier update`."
   {
     packages = {
       inherit env;

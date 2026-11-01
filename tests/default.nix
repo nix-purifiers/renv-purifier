@@ -11,7 +11,7 @@
   pkgs,
   # The renv-purifier command.
   cli,
-  # The flake's default package overlay, which adds buildRenvProject.
+  # The flake's default package overlay, which adds the scope renv-purifier.
   overlay,
 }:
 let
@@ -19,8 +19,8 @@ let
   R = pkgs.R;
 
   # Every fixture builds the way a consumer's package does: through
-  # buildRenvProject of a package set the overlay applies to.
-  build = (pkgs.extend overlay).buildRenvProject;
+  # renv-purifier.buildRenvProject of a package set the overlay applies to.
+  build = (pkgs.extend overlay).renv-purifier.buildRenvProject;
 
   # An R package whose dependencies come from every source a lock records:
   # CRAN (current and archived), packages that link libxml2 and openssl,
@@ -49,6 +49,22 @@ let
       root = ./fixtures/hello;
       fileset = lib.fileset.difference ./fixtures/hello ./fixtures/hello/renv-purifier.lock.json;
     };
+    lockFile = ./fixtures/hello/renv-purifier.lock.json;
+  };
+
+  # The hello fixture without renv.lock and without its purifier lockfile,
+  # built from both lockfiles kept outside the source.
+  externalRenvLock = build {
+    src = lib.fileset.toSource {
+      root = ./fixtures/hello;
+      fileset = lib.fileset.difference ./fixtures/hello (
+        lib.fileset.unions [
+          ./fixtures/hello/renv.lock
+          ./fixtures/hello/renv-purifier.lock.json
+        ]
+      );
+    };
+    renvLock = ./fixtures/hello/renv.lock;
     lockFile = ./fixtures/hello/renv-purifier.lock.json;
   };
 
@@ -222,6 +238,7 @@ in
 
   conformance-external = runCommand "conformance-external" { } ''
     ${external.packages.env}/bin/Rscript -e 'stopifnot(identical(hello::hello("you")$glue, "Hello, you"))'
+    ${externalRenvLock.packages.env}/bin/Rscript -e 'stopifnot(identical(hello::hello("you")$glue, "Hello, you"))'
     touch $out
   '';
 
@@ -232,7 +249,7 @@ in
     conformance-malformed
     ;
 
-  # buildRenvProject.override replaces what the builder takes from the
+  # renv-purifier.buildRenvProject.override replaces what the builder takes from the
   # package set: an R built with other options gives another library.
   builder-override =
     let

@@ -20,14 +20,15 @@ lockfile:
 nix run github:nix-purifiers/renv-purifier -- lock
 ```
 
-The flake's `overlays.default` adds the builder `buildRenvProject` to a
-package set, and a package written for `callPackage` takes it by name, like
-any other builder:
+The flake's `overlays.default` adds one attribute to a package set, the
+scope `renv-purifier`. The scope holds the builder `buildRenvProject` and
+the command, and a package written for `callPackage` takes the scope by
+name:
 
 ```nix
 # package.nix
-{ buildRenvProject }:
-(buildRenvProject { src = ./.; }).packages.env
+{ renv-purifier }:
+(renv-purifier.buildRenvProject { src = ./.; }).packages.env
 ```
 
 ```nix
@@ -79,7 +80,8 @@ the purifier lockfile into the lock shape every purifier shares: `entries`,
 The arguments, documented in `nix/lib/build-renv-project.nix`, are `src`,
 `lockFile`, `fetchers` (passed to the purifier library's `fetchEntry`, for
 credentials or a company mirror), `localPackages`, `extraBuildInputs`,
-`extraNativeBuildInputs` and `srcFilter`. `buildRenvProject.override`
+`extraNativeBuildInputs` and `srcFilter`. `renv-purifier.overrideScope`
+replaces what the scope shares, and `renv-purifier.buildRenvProject.override`
 replaces what the builder takes from the package set, such as `R`.
 
 A packaging flake can build a project whose author does not use
@@ -157,7 +159,7 @@ names the fix:
 | a lockfile of another format version | `… has lock format version <n>, and this library reads version 2. Run renv-purifier lock …` |
 | `renv.lock` with merge conflict markers | `… renv.lock, which is not valid JSON; look for merge conflict markers, fix it, or run renv::snapshot() again` |
 | a package from outside the project that the build cannot reach | `renv.lock installs <package> from <path>, a directory outside the project; pass it as localPackages.<package>.` |
-| `renv.lock` made with another R minor release | The build goes ahead with the R of the package set and warns. For a package that fails to compile, the warning names `buildRenvProject.override` and `renv-purifier update`. |
+| `renv.lock` made with another R minor release | The build goes ahead with the R of the package set and warns. When a package fails to compile, the warning tells you to pass an R of the locked release through `renv-purifier.buildRenvProject.override`, or to run `renv-purifier update`. |
 
 ## Supported language repositories
 
@@ -243,7 +245,7 @@ shell with R and that library.
         inherit system;
         overlays = [ renv-purifier.overlays.default ];
       };
-      project = pkgs.buildRenvProject {
+      project = pkgs.renv-purifier.buildRenvProject {
         src = cransays;
         lockFile = ./cransays.lock.json;
       };
