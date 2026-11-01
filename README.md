@@ -122,9 +122,7 @@ R's language server is the R package languageserver, which editors such as
 VS Code, Emacs and Neovim start for completion and diagnostics. Add it to the
 project with renv like any other package. `prefetch` then installs it with
 the rest of the library: point the editor's R at
-`.renv-purifier/prefetch/R/bin/R`. The checks load it offline in a
-prefetched project, and start it from `packages.env` and answer an LSP
-`initialize` request. RStudio and Emacs Speaks Statistics run an ordinary R session,
+`.renv-purifier/prefetch/R/bin/R`, or start it from `packages.env`. RStudio and Emacs Speaks Statistics run an ordinary R session,
 which works the same way.
 
 ## Errors and fixes
@@ -176,8 +174,7 @@ does, and the purifier lockfile adds what `renv.lock` cannot give:
 renv-purifier refuses a source renv-purifier does not know, naming the
 package. The lock run downloads each file and records its hash. It installs
 nothing, and it runs R with `--vanilla`, so the project's `.Rprofile` does
-not run. It takes about a minute for a project of a hundred packages. For a
-project that uses Bioconductor, the cellar also holds a Bioconductor
+not run. For a project that uses Bioconductor, the cellar also holds a Bioconductor
 configuration file that pairs the locked release with the R of the build,
 which BiocManager reads in place of the file Bioconductor publishes.
 
@@ -194,22 +191,69 @@ sources, which download third-party libraries and fail offline. Lock a
 version of the package that matches nixpkgs, or pass the matching library
 through `extraBuildInputs`.
 
+renv-purifier builds on x86_64-linux and aarch64-linux. It does not build
+on macOS.
+
 The release and the project's package rebuild bit for bit. The library of
 dependencies does not: R and renv unpack each package into a randomly named
 temporary directory, and the help pages R installs record that path.
 
 ## Examples
 
-CI locks and builds [r-hub/cransays](https://github.com/r-hub/cransays) at
-commit `aeaa139`, on x86_64-linux and aarch64-linux. Its `renv.lock` holds
-67 CRAN packages, among them curl, openssl, xml2, stringi and ragg, which
-link system libraries. renv 1.2.3 made the lock, and most of its records name
-`RSPM`, a repository the `renv.lock` does not list. The purifier lockfile
-lives in this repository, at `tests/real/cransays`, the way a packaging
-flake keeps it for a project that does not use renv-purifier. At this commit
-cransays is a Quarto dashboard whose `DESCRIPTION` names a package with no R
-code, so the checks in `tests/default.nix` build its library and load every
-package.
+### cransays, packaged from outside
+
+[r-hub/cransays](https://github.com/r-hub/cransays) is the dashboard of
+packages waiting in CRAN's incoming queue. Its author keeps a `renv.lock`
+and does not use renv-purifier, so a packaging flake of your own keeps the
+purifier lockfile and builds cransays from its repository. cransays is a
+dashboard rather than an R package, so the flake builds its library and a
+shell with R and that library.
+
+```nix
+# flake.nix, in a directory of your own
+{
+  inputs.renv-purifier.url = "github:nix-purifiers/renv-purifier";
+  inputs.nixpkgs.follows = "renv-purifier/nixpkgs";
+  inputs.cransays = {
+    url = "github:r-hub/cransays";
+    flake = false;
+  };
+
+  outputs = { nixpkgs, renv-purifier, cransays, ... }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      project = renv-purifier.lib.renv-purifier.buildRenvProject {
+        inherit pkgs;
+        src = cransays;
+        lockFile = ./cransays.lock.json;
+      };
+    in
+    {
+      packages.${system}.default = project.library;
+      devShells.${system}.default = pkgs.mkShell {
+        packages = [ pkgs.R ];
+        R_LIBS_SITE = "${project.library}/library";
+      };
+    };
+}
+```
+
+Lock cransays at the commit the flake pins, then build it and start R with
+its packages:
+
+```zsh
+nix flake lock
+git clone https://github.com/r-hub/cransays
+git -C cransays checkout "$(nix run 'nixpkgs#jq' -- -r .nodes.cransays.locked.rev flake.lock)"
+nix run github:nix-purifiers/renv-purifier -- lock --project cransays --lockfile cransays.lock.json
+git add flake.nix flake.lock cransays.lock.json
+nix build
+nix develop --command R
+```
+
+After `nix flake update cransays`, check out the new commit and run the
+`lock` command again.
 
 ## Credits
 
