@@ -13,8 +13,9 @@ and meets their contract
 
 ## Quickstart
 
-Lock the project from its root, where `renv.lock` is, and commit the
-lockfile:
+Lock the project from its root, where `renv.lock` is, and commit both
+lockfiles to the project's repository. That is the recommended setup, and
+the builder and the commands look for the lockfiles there by default:
 
 ```zsh
 nix run github:nix-purifiers/renv-purifier -- lock
@@ -73,22 +74,28 @@ name:
 - `library` holds every locked package, `cellar` their source tarballs, and
   `interactive` what `renv-purifier prefetch` installs.
 
-`lib.renv-purifier.readLock { src, lockFile ? ... }` reads `renv.lock` and
-the purifier lockfile into the lock shape every purifier shares: `entries`,
-`outputs` and `problems`.
+`lib.renv-purifier.readLock { src, lockFile ? ..., renvLock ? ... }` reads
+`renv.lock` and the purifier lockfile into the lock shape every purifier
+shares: `entries`, `outputs` and `problems`.
 
 The arguments, documented in `nix/lib/build-renv-project.nix`, are `src`,
-`lockFile`, `fetchers` (passed to the purifier library's `fetchEntry`, for
-credentials or a company mirror), `localPackages`, `extraBuildInputs`,
-`extraNativeBuildInputs` and `srcFilter`. `renv-purifier.overrideScope`
+`lockFile`, `renvLock`, `fetchers` (passed to the purifier library's
+`fetchEntry`, for credentials or a company mirror), `localPackages`,
+`extraBuildInputs`, `extraNativeBuildInputs` and `srcFilter`. `renv-purifier.overrideScope`
 replaces what the scope shares, and `renv-purifier.buildRenvProject.override`
 replaces what the builder takes from the package set, such as `R`.
 
-A packaging flake can build a project whose author does not use
-renv-purifier: it keeps the purifier lockfile itself and passes it as
-`lockFile`, and the project's `src` holds only renv's files. The commands
-take that lockfile through `--lockfile <path>` or the environment variable
-`RENV_PURIFIER_LOCKFILE`.
+A project can instead keep its build external, which is an option and not
+the main path. A packaging flake can build a project whose author does not
+use renv-purifier: it keeps the purifier lockfile itself and passes it as
+`lockFile`. It can also keep its own copy of `renv.lock` and pass it as
+`renvLock`, and the build then uses that copy in place of the one in `src`.
+The commands take the purifier lockfile through `--lockfile <path>` or the
+environment variable `RENV_PURIFIER_LOCKFILE`, and the renv.lock through
+`--tool-lockfile <path>` or `RENV_PURIFIER_TOOL_LOCKFILE`. With a tool
+lockfile, `lock` and `update` write the renv.lock at that path and leave the
+copy in the project as it is. When the file at that path does not exist
+yet, they start from the renv.lock in the project.
 
 ## Development loop
 

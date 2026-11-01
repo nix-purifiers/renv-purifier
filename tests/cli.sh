@@ -93,6 +93,17 @@ cmp "$root/tests/fixtures/hello/renv-purifier.lock.json" "$work/packaging/hello.
 RENV_PURIFIER_LOCKFILE="$work/packaging/hello.lock.json" "$cli" prefetch --project "$work/external"
 test -L "$work/packaging/.renv-purifier/prefetch"
 
+echo "== a renv.lock outside the project"
+copy_hello toolexternal
+rm "$work/toolexternal/renv-purifier.lock.json"
+mv "$work/toolexternal/renv.lock" "$work/packaging/tool.renv.lock"
+echo '{"R":{"Version":"4.6.1","Repositories":[]},"Packages":{}}' > "$work/toolexternal/renv.lock"
+RENV_PURIFIER_TOOL_LOCKFILE="$work/packaging/tool.renv.lock" "$cli" lock --project "$work/toolexternal" \
+  --lockfile "$work/packaging/tool.lock.json"
+cmp "$root/tests/fixtures/hello/renv-purifier.lock.json" "$work/packaging/tool.lock.json"
+cmp "$root/tests/fixtures/hello/renv.lock" "$work/packaging/tool.renv.lock"
+grep -q '"Packages": {}' "$work/toolexternal/renv.lock" || grep -q '"Packages":{}' "$work/toolexternal/renv.lock"
+
 echo "== add a dependency, relock and prefetch"
 # renv::record() adds crayon to renv.lock from repository metadata, as
 # renv::install() and renv::snapshot() would after installing it. With
