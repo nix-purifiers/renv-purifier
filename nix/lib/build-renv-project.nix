@@ -150,7 +150,13 @@ let
   # The system libraries and tools of the locked packages, as nixpkgs' R
   # packages of the same names declare them. The R packages among their
   # inputs are left out, because renv installs those from the cellar.
-  isRPackage = drv: lib.hasPrefix "r-" (lib.getName drv) || lib.getName drv == "R";
+  # nixpkgs names an R package `r-<name>-<version>`, with the bare R name as
+  # its pname, so the test reads the full name.
+  isRPackage = drv: lib.hasPrefix "r-" (drv.name or "") || lib.getName drv == "R";
+
+  # The output that holds the shared objects of a library, from any of its
+  # outputs: the `lib` output when it has one, and `out` otherwise.
+  libraryOutput = drv: lib.getLib (drv.out or drv);
   systemInputs =
     attribute:
     lib.unique (
@@ -161,6 +167,28 @@ let
         )
       ) lock.packages
     );
+
+  # The libraries to link against, each with the output that holds its
+  # shared objects. nixpkgs often names only the dev output of a library,
+  # such as openssl.dev for openssl.
+  linkedInputs =
+    let
+      inputs = systemInputs "buildInputs" ++ systemInputs "propagatedBuildInputs" ++ extraBuildInputs;
+    in
+    lib.unique (inputs ++ map libraryOutput inputs);
+
+  # A runtime path to the library directory of every system input, the ones
+  # nixpkgs lists as native inputs included: nixpkgs lists openssl among
+  # the native inputs of its R package openssl. A package's configure script
+  # often links with the flags pkg-config gives, such as openssl's
+  # `-l:libssl.so.3`, for which the compiler wrapper records no runtime path,
+  # and the shared object then does not load. The fixup phase drops the
+  # paths a package does not use.
+  runtimePaths = toString (
+    map (drv: "-rpath ${libraryOutput drv}/lib") (
+      lib.unique (linkedInputs ++ systemInputs "nativeBuildInputs" ++ extraNativeBuildInputs)
+    )
+  );
 
   renvPackage = lib.findFirst (package: package.name == "renv") null lock.packages;
   renvTarball =
@@ -196,8 +224,8 @@ let
     ]
     ++ systemInputs "nativeBuildInputs"
     ++ extraNativeBuildInputs;
-    buildInputs =
-      systemInputs "buildInputs" ++ systemInputs "propagatedBuildInputs" ++ extraBuildInputs;
+    buildInputs = linkedInputs;
+    env.NIX_LDFLAGS = runtimePaths;
     dontConfigure = true;
     buildPhase = ''
       runHook preBuild
@@ -234,8 +262,8 @@ let
     ]
     ++ systemInputs "nativeBuildInputs"
     ++ extraNativeBuildInputs;
-    buildInputs =
-      systemInputs "buildInputs" ++ systemInputs "propagatedBuildInputs" ++ extraBuildInputs;
+    buildInputs = linkedInputs;
+    env.NIX_LDFLAGS = runtimePaths;
     dontConfigure = true;
     inherit doCheck;
     buildPhase = ''

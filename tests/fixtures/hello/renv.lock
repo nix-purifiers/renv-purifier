@@ -78,6 +78,21 @@
       "Repository": "CRAN",
       "Type": "source"
     },
+    "askpass": {
+      "Package": "askpass",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Imports": [
+        "sys (>= 2.1)"
+      ],
+      "Suggests": [
+        "testthat"
+      ],
+      "License": "MIT + file LICENSE",
+      "NeedsCompilation": "yes",
+      "Repository": "CRAN",
+      "Type": "source"
+    },
     "cli": {
       "Package": "cli",
       "Version": "3.6.6",
@@ -192,6 +207,28 @@
         "rmarkdown",
         "R.rsp",
         "sf"
+      ],
+      "License": "MIT + file LICENSE",
+      "NeedsCompilation": "yes",
+      "Repository": "CRAN",
+      "Type": "source"
+    },
+    "openssl": {
+      "Package": "openssl",
+      "Version": "2.4.2",
+      "Source": "Repository",
+      "Imports": [
+        "askpass"
+      ],
+      "Suggests": [
+        "curl",
+        "testthat (>= 2.1.0)",
+        "digest",
+        "knitr",
+        "rmarkdown",
+        "jsonlite",
+        "jose",
+        "sodium"
       ],
       "License": "MIT + file LICENSE",
       "NeedsCompilation": "yes",
@@ -332,6 +369,20 @@
       ],
       "Enhances": [
         "winch"
+      ],
+      "License": "MIT + file LICENSE",
+      "NeedsCompilation": "yes",
+      "Repository": "CRAN",
+      "Type": "source"
+    },
+    "sys": {
+      "Package": "sys",
+      "Version": "3.4.3",
+      "Source": "Repository",
+      "Suggests": [
+        "unix (>= 1.4)",
+        "spelling",
+        "testthat"
       ],
       "License": "MIT + file LICENSE",
       "NeedsCompilation": "yes",

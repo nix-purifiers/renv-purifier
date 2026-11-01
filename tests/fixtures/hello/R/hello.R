@@ -8,6 +8,7 @@ hello <- function(name) {
     glue = as.character(glue::glue("Hello, {name}")),
     praise = praise::praise("${Adjective}"),
     size = prettyunits::pretty_bytes(1337),
+    digest = as.character(openssl::sha256(name)),
     match = unname(rematch::re_match("(?<word>[a-z]+)", "hello")[, "word"]),
     generic = is.function(BiocGenerics::combine)
   )

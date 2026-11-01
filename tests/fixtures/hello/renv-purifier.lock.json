@@ -1,9 +1,23 @@
 {
   "version": 1,
-  "renvLock": "bef08f6c1413c547f09b892b38494f5cd52bbfacd8d75edd5c57e0d13af805c2",
+  "renvLock": "28273224c1a7c0b4990c35af560451dc46afd47e03149ac904a2507e123e496d",
   "r": "4.6.1",
   "bioconductor": "3.23",
   "packages": [
+    {
+      "name": "askpass",
+      "version": "1.2.1",
+      "cellarName": "askpass_1.2.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "askpass/askpass_1.2.1.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/askpass_1.2.1.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/askpass/askpass_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/askpass/1.2.1/askpass_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/askpass_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/askpass/askpass_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/askpass/1.2.1/askpass_1.2.1.tar.gz"],
+        "hash": "sha256-bCEGp0xEp0jyzqeV2WhuJ6AFipDevP2FWLYrBq7Ax90="
+      },
+      "local": null,
+      "outside": null
+    },
     {
       "name": "BiocGenerics",
       "version": "0.58.1",
@@ -98,6 +112,20 @@
       "outside": null
     },
     {
+      "name": "openssl",
+      "version": "2.4.2",
+      "cellarName": "openssl_2.4.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "openssl/openssl_2.4.2.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/openssl_2.4.2.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/openssl/openssl_2.4.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/openssl/2.4.2/openssl_2.4.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/openssl_2.4.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/openssl/openssl_2.4.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/openssl/2.4.2/openssl_2.4.2.tar.gz"],
+        "hash": "sha256-H8AwrQoAhHLqx/CGZmp2I72+bSfF/bB7VRD1ZUXS9Oc="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
       "name": "praise",
       "version": "1.0.0",
       "cellarName": "praise_094469afaf033af00aeb46527970f1db22f4d49d.tar.gz",
@@ -168,6 +196,20 @@
         "url": "https://cloud.r-project.org/src/contrib/rlang_1.3.0.tar.gz",
         "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/rlang/rlang_1.3.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rlang/1.3.0/rlang_1.3.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/rlang_1.3.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rlang/rlang_1.3.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rlang/1.3.0/rlang_1.3.0.tar.gz"],
         "hash": "sha256-gKpTfUnnImX0Q6FeiTYSivWDyqXlcghlGLUDy/BkJ5w="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "sys",
+      "version": "3.4.3",
+      "cellarName": "sys_3.4.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "sys/sys_3.4.3.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/sys_3.4.3.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/sys/sys_3.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/sys/3.4.3/sys_3.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/sys_3.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/sys/sys_3.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/sys/3.4.3/sys_3.4.3.tar.gz"],
+        "hash": "sha256-BR5zMuMHTbgm7++QWQZ3IYZPnXCtxVu8rjpy5a6DkTo="
       },
       "local": null,
       "outside": null
