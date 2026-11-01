@@ -198,30 +198,18 @@ The release and the project's package rebuild bit for bit. The library of
 dependencies does not: R and renv unpack each package into a randomly named
 temporary directory, and the help pages R installs record that path.
 
-## Real-world projects
+## Examples
 
-renv-purifier was tried on these open-source projects, each pinned to a
-commit:
-
-- [r-hub/cransays](https://github.com/r-hub/cransays) at `aeaa139`: 67 CRAN
-  packages, among them curl, openssl, xml2, stringi and ragg, which link
-  system libraries. Most of its records name `RSPM`, a repository its
-  `renv.lock` does not list, which is why the lock run tries every listed
-  repository. It is the integration test in `tests/default.nix`, with its
-  purifier lockfile kept outside the project. At this commit cransays is a
-  Quarto dashboard whose `DESCRIPTION` names a package with no R code left,
-  so the check builds its library and loads every package. It found
-  three problems that renv-purifier fixes: openssl links with
-  `-l:libssl.so.3`, which needs a runtime path the compiler wrapper does not
-  add; the renv 1.2.3 it pins fails its own offline restore, so the builder
-  restores with the renv of nixpkgs; and repository preference.
-- [langcog/wordbankr](https://github.com/langcog/wordbankr) at `86df76f`:
-  107 packages from R 4.5.3, from Posit Package Manager and CRAN. The lock
-  run took 68 seconds. It locks arrow 25.0.0, which does not build against
-  the libarrow 24.0.0 of nixpkgs (see above).
-- [pharmaverse/sdtm.oak](https://github.com/pharmaverse/sdtm.oak) at
-  `6b5d887`: its committed `renv.lock` holds unresolved merge conflict
-  markers, which `renv-purifier lock` reports as such.
+CI locks and builds [r-hub/cransays](https://github.com/r-hub/cransays) at
+commit `aeaa139`, on x86_64-linux and aarch64-linux. Its `renv.lock` holds
+67 CRAN packages, among them curl, openssl, xml2, stringi and ragg, which
+link system libraries. renv 1.2.3 made the lock, and most of its records name
+`RSPM`, a repository the `renv.lock` does not list. The purifier lockfile
+lives in this repository, at `tests/real/cransays`, the way a packaging
+flake keeps it for a project that does not use renv-purifier. At this commit
+cransays is a Quarto dashboard whose `DESCRIPTION` names a package with no R
+code, so the checks in `tests/default.nix` build its library and load every
+package.
 
 ## Credits
 
