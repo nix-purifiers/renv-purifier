@@ -27,12 +27,16 @@ die() {
 
 project_dir() {
   local dir="${1:-.}"
-  [ -f "$dir/renv.lock" ] || die "$dir has no renv.lock"
+  [ -f "$dir/renv.lock" ] || die "$dir has no renv.lock; run renv::init() or renv::snapshot() in the project"
+  jq empty "$dir/renv.lock" 2>/dev/null ||
+    die "$dir/renv.lock is not valid JSON (look for merge conflict markers); fix it, or run renv::snapshot() again"
   realpath "$dir"
 }
 
 require_lock() {
   [ -f "$1/renv-purifier.lock.json" ] || die "$1 has no renv-purifier.lock.json; run renv-purifier lock"
+  jq empty "$1/renv-purifier.lock.json" 2>/dev/null ||
+    die "$1/renv-purifier.lock.json is not valid JSON; run renv-purifier lock to write it again"
 }
 
 # Whether the purifier lock was made from the current renv.lock.
@@ -52,6 +56,7 @@ nix_build() {
   shift
   nix-build "$RENV_PURIFIER_LIB/cli.nix" \
     --arg nixpkgs "$RENV_PURIFIER_NIXPKGS" \
+    --argstr purifier "$RENV_PURIFIER_LIBRARY" \
     --argstr src "$dir" \
     "$@"
 }
@@ -66,7 +71,9 @@ shift
 case "$command" in
 lock)
   dir=$(project_dir "${1:-}")
-  Rscript "$RENV_PURIFIER_SCRIPTS/lock.R" "$dir" "$RENV_PURIFIER_FORMAT"
+  # --vanilla keeps R from reading the .Rprofile of the working directory,
+  # which in an renv project activates renv and runs project code.
+  Rscript --vanilla "$RENV_PURIFIER_SCRIPTS/lock.R" "$dir" "$RENV_PURIFIER_FORMAT"
   ;;
 
 restore)
@@ -96,6 +103,7 @@ restore)
   cd "$dir" || die "cannot enter $dir"
   nix-shell "$RENV_PURIFIER_LIB/cli.nix" \
     --arg nixpkgs "$RENV_PURIFIER_NIXPKGS" \
+    --argstr purifier "$RENV_PURIFIER_LIBRARY" \
     --argstr src "$dir" \
     -A shell \
     --run "Rscript -e 'renv::restore(prompt = FALSE)'"
@@ -123,7 +131,7 @@ publish)
   name=$(jq -r '.outputs.package.name' "$dir/renv-purifier.lock.json")
   # write_PACKAGES only warns about a tarball it cannot read, so the index
   # is checked for the package afterwards.
-  Rscript -e '
+  Rscript --vanilla -e '
     contrib <- commandArgs(TRUE)[1]
     tools::write_PACKAGES(contrib, type = "source")
     index <- read.dcf(file.path(contrib, "PACKAGES"))

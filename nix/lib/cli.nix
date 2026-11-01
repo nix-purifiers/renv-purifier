@@ -3,15 +3,20 @@
 # What the renv-purifier command builds, for a project directory on the
 # machine it runs on: the cellar `renv-purifier restore` installs from, and
 # the project as buildRenvProject builds it, for `renv-purifier build` and
-# `renv-purifier publish`. The command passes the nixpkgs it was built with.
+# `renv-purifier publish`. The command passes the nixpkgs it was built with
+# and the locked reference of the shared purifier library, whose flake
+# output gives the fetcher of download entries.
 {
   nixpkgs,
+  # A locked flake reference to github:nix-purifiers/purifier.
+  purifier,
   # The project directory, as an absolute path.
   src,
 }:
 let
   pkgs = import nixpkgs { };
-  built = (pkgs.callPackage ./build-renv-project.nix { }) { src = /. + src; };
+  inherit ((builtins.getFlake purifier).lib.purifier) fetchEntry;
+  built = (pkgs.callPackage ./build-renv-project.nix { inherit fetchEntry; }) { src = /. + src; };
 in
 {
   inherit (built) cellar env;

@@ -31,14 +31,17 @@ package from a git host. renv checks the cellar for every source a
 `renv.lock` record can have. renv-purifier builds a cellar from its
 lockfile, so renv installs every package with its normal logic, and records
 the same provenance (`RemoteType`, `RemoteSha` and the other `Remote`
-fields) an online restore records.
+fields) an online restore records. Like nixpkgs' own R builder, the cellar
+points the interpreter lines of package scripts into the store, because
+configure scripts often start with `#!/usr/bin/env sh`, and the Nix sandbox
+has no `/usr/bin/env`.
 
 `renv-purifier lock` reads `renv.lock` and builds each package's download URL
 the way renv's retrieval code does:
 
 | `renv.lock` source | Download |
 |---|---|
-| CRAN or another CRAN-like repository | `src/contrib/<file>`, with the repository's `Archive/` URLs as mirrors, because CRAN moves a superseded version there |
+| CRAN or another CRAN-like repository | `src/contrib/<file>`, with the repository's `Archive/` URLs as mirrors, because CRAN moves a superseded version there. The repository the record names comes first, then every repository `renv.lock` lists, as in renv: records often name the repository a package was first installed from, such as `RSPM`, which `renv.lock` does not list. |
 | Bioconductor | the release's repositories, and the commit the package was built from when Bioconductor no longer serves the version |
 | GitHub, GitLab, Bitbucket | the host's tarball of the locked commit |
 | git | a checkout of the locked commit, packed into a tarball by Nix |
@@ -46,10 +49,15 @@ the way renv's retrieval code does:
 | a directory in the project | none: renv installs it from the project |
 | a directory outside the project | none: Nix packs it into a tarball (see `localPackages` below) |
 
-It downloads each file and records its hash. It installs nothing: every
-package is compiled later, in the Nix sandbox. For a project that uses
-Bioconductor, it also holds the Bioconductor configuration file, which
-BiocManager reads to check the release offline.
+It downloads each file and records its hash. It installs nothing, and it
+runs R with `--vanilla`, so the project's `.Rprofile` does not run: every
+package is compiled later, in the Nix sandbox. A relock writes the same file
+byte for byte. It takes about a minute for a project of a hundred packages.
+
+For a project that uses Bioconductor, the cellar also holds a Bioconductor
+configuration file that pairs the locked release with the R of the build.
+BiocManager reads it to check the release, where it would otherwise download
+the file Bioconductor publishes.
 
 The lockfile is current while `renv.lock` is unchanged. Rerun
 `renv-purifier lock` after `renv::snapshot()`.
@@ -116,11 +124,44 @@ same name declares, such as libxml2 for xml2. A package that nixpkgs does
 not have, or one that needs more than nixpkgs declares, takes them through
 `extraBuildInputs`.
 
-We recommend following the nixpkgs input of renv-purifier, as above. A
-package built for one R minor release does not load in another, so the
-builder refuses a lockfile whose `renv.lock` names another R minor release
-than the package set has. Pass an `R` of that release through
-`buildRenvProject.override`.
+A package whose build needs a system library at an exact version can only
+build when nixpkgs has that version. The R package arrow is one: arrow
+25.0.0 needs libarrow 25.0.0, and when nixpkgs has another version, its
+configure script falls back to building its bundled C++ sources, which
+download third-party libraries and fail offline. Lock a version of the
+package that matches nixpkgs, or pass the matching library through
+`extraBuildInputs`.
+
+We recommend following the nixpkgs input of renv-purifier, as above. The
+builder compiles every package from source with the R of the package set.
+When `renv.lock` names another R minor release, the build goes ahead with a
+warning, because old package versions sometimes do not compile with a newer
+R. Then pass an `R` of the locked release through
+`buildRenvProject.override`, or update the package with renv.
+
+### Mistakes and their messages
+
+Each common mistake stops the build or the command with a message that
+names the fix:
+
+| Mistake | Message |
+|---|---|
+| `renv.lock` changed after locking | `renv.lock in … changed after … was made; run renv-purifier lock.` |
+| a package of `renv.lock` missing from the purifier lockfile | `renv.lock names <package>, which … has no entry for; run renv-purifier lock.` |
+| `renv.lock` with merge conflict markers | `renv.lock is not valid JSON (look for merge conflict markers); fix it, or run renv::snapshot() again` |
+| a malformed purifier lockfile | `renv-purifier.lock.json is not valid JSON; run renv-purifier lock to write it again` |
+| an edited hash in the purifier lockfile | Nix's `hash mismatch in fixed-output derivation`, for that file |
+| a package from outside the project that the build cannot reach | `renv.lock installs <package> from a directory outside the project; pass it as localPackages.<package>.` |
+
+### Editors
+
+R's language server is the R package languageserver, which editors such as
+VS Code, Emacs and Neovim start for completion and diagnostics. Add it to the
+project with renv like any other package. Then `env/bin/R` and an offline
+`renv-purifier restore` provide it, and the tests start it from a
+purifier-built environment and answer an LSP `initialize` request. RStudio
+and Emacs Speaks Statistics run an ordinary R session, which works with
+either.
 
 ### Packages outside the project
 
@@ -168,6 +209,25 @@ to a repository host such as a drat repository on GitHub Pages, and
 CRAN itself takes packages through a web form, followed by a confirmation
 email to the maintainer, so the submission cannot be automated. Submit the
 tarball Nix built, from `package.artifacts`.
+
+## Projects tried
+
+renv-purifier was tried on these open-source projects, each pinned to a
+commit:
+
+- [r-hub/cransays](https://github.com/r-hub/cransays) at `aeaa139`: an R
+  package with 67 CRAN packages, among them curl, openssl, xml2, stringi
+  and ragg, which link system libraries. The lock run took 49 seconds. Most
+  of its records name `RSPM`, a repository its `renv.lock` does not list,
+  which is why the lock run tries every listed repository. It is the
+  integration test in `tests/default.nix`.
+- [langcog/wordbankr](https://github.com/langcog/wordbankr) at `86df76f`:
+  107 packages from R 4.5.3, from Posit Package Manager and CRAN. The lock
+  run took 68 seconds. It locks arrow 25.0.0, which does not build against
+  the libarrow 24.0.0 of nixpkgs (see above).
+- [pharmaverse/sdtm.oak](https://github.com/pharmaverse/sdtm.oak) at
+  `6b5d887`: its committed `renv.lock` holds unresolved merge conflict
+  markers, which `renv-purifier lock` reports as such.
 
 ## Credit
 

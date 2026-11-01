@@ -15,6 +15,10 @@ in
     final: prev:
     packages final prev
     // {
-      buildRenvProject = final.callPackage ../../nix/lib/build-renv-project.nix { };
+      # The builder fetches download entries with the shared purifier
+      # library, which this flake lists in its projects.
+      buildRenvProject = final.callPackage ../../nix/lib/build-renv-project.nix {
+        inherit (closure-lib.purifier) fetchEntry;
+      };
     };
 }

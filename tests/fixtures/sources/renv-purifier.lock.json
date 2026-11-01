@@ -35,7 +35,7 @@
       "download": {
         "path": "renv/renv_1.3.1.tar.gz",
         "url": "https://cloud.r-project.org/src/contrib/renv_1.3.1.tar.gz",
-        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/renv/renv_1.3.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/renv/1.3.1/renv_1.3.1.tar.gz"],
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/renv/renv_1.3.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/renv/1.3.1/renv_1.3.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/renv_1.3.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/renv/renv_1.3.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/renv/1.3.1/renv_1.3.1.tar.gz"],
         "hash": "sha256-4WKBkI3fDtb49vitPyzEeIr23gTBqyI1F6ocyayzBzE="
       },
       "local": null,

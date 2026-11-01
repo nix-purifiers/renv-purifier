@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 #
 # The flake's checks. Every one builds in the sandbox; the only network
-# access is the fixed-output fetches of locked downloads.
+# access is the fixed-output fetches of locked downloads and of the pinned
+# real-world project.
 {
   pkgs,
   # The flake's default package overlay, which adds buildRenvProject.
@@ -29,16 +30,30 @@ let
   # the path renv.lock records.
   sources = buildRenvProject { src = ./fixtures/sources; };
 
-  # A copy of the hello lock with some fields changed.
-  helloLockWith =
-    attrs:
-    builtins.toFile "renv-purifier.lock.json" (
-      builtins.toJSON (
-        builtins.fromJSON (builtins.readFile ./fixtures/hello/renv-purifier.lock.json) // attrs
-      )
-    );
+  # A project whose renv.lock holds the R language server, languageserver,
+  # and its dependencies, which editors start for completion and diagnostics.
+  editor = buildRenvProject { src = ./fixtures/editor; };
 
-  # Whether buildRenvProject refuses the hello project with this lockfile
+  # A real-world project, pinned: r-hub/cransays, an R package with 67 CRAN
+  # packages, among them curl, openssl, xml2, stringi and ragg, which link
+  # system libraries. Its renv.lock names Posit Package Manager and records
+  # most packages as coming from a repository it does not list (RSPM).
+  cransays = buildRenvProject {
+    src = pkgs.fetchFromGitHub {
+      owner = "r-hub";
+      repo = "cransays";
+      rev = "aeaa1397fdb453e0a5b710ddc03a3fa04a89cf39";
+      sha256 = "031zzdi8sxzwx0xdfhqipk2rcd3hy494ydabgbs0129mbkk6sf55";
+    };
+    lockFile = ./real/cransays/renv-purifier.lock.json;
+  };
+
+  helloLock = builtins.fromJSON (builtins.readFile ./fixtures/hello/renv-purifier.lock.json);
+
+  # A copy of the hello lock, with `f` applied.
+  helloLockWith = f: builtins.toFile "renv-purifier.lock.json" (builtins.toJSON (f helloLock));
+
+  # Whether buildRenvProject refuses the hello project with these arguments
   # when the library is evaluated.
   refuses =
     args:
@@ -54,9 +69,9 @@ in
 {
   inherit cli;
 
-  # The download URLs the lock run builds are the ones renv builds.
-  urls = pkgs.runCommand "renv-purifier-urls" { nativeBuildInputs = [ R ]; } ''
-    Rscript ${../pkgs/renv-purifier/test-urls.R} ${../pkgs/renv-purifier}
+  # The plans of records.R for every source renv.lock can hold.
+  records = pkgs.runCommand "renv-purifier-records" { nativeBuildInputs = [ R ]; } ''
+    Rscript --vanilla ${../pkgs/renv-purifier/test-records.R} ${../pkgs/renv-purifier}
     touch $out
   '';
 
@@ -97,8 +112,8 @@ in
   hello-publish = pkgs.runCommand "hello-publish" { nativeBuildInputs = [ R ]; } ''
     mkdir -p repository/src/contrib library
     install -m 644 ${hello.package.artifacts."hello_1.0.0.tar.gz"} repository/src/contrib/
-    Rscript -e 'tools::write_PACKAGES("repository/src/contrib", type = "source")'
-    R_LIBS_SITE=${hello.library}/library Rscript -e '
+    Rscript --vanilla -e 'tools::write_PACKAGES("repository/src/contrib", type = "source")'
+    R_LIBS_SITE=${hello.library}/library Rscript --vanilla -e '
       install.packages("hello", repos = paste0("file://", normalizePath("repository")), lib = "library", type = "source")
       library(hello, lib.loc = "library")
       stopifnot(identical(hello("you")$glue, "Hello, you"))
@@ -113,20 +128,49 @@ in
     touch $out
   '';
 
-  # A lock made from another renv.lock, for another R minor release or in
-  # another format would not match what the build installs, so the builder
-  # refuses it at evaluation. So does a lock with a package from outside the
-  # project that `src` does not reach.
+  # The language server starts from the environment and answers an LSP
+  # initialize request, as it does for an editor.
+  editor-languageserver = pkgs.runCommand "editor-languageserver" { } ''
+    request='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":null,"rootUri":null,"capabilities":{}}}'
+    printf 'Content-Length: %d\r\n\r\n%s' "''${#request}" "$request" > input
+    ${editor.env}/bin/Rscript -e 'languageserver::run()' < input > output 2> log || true
+    grep -q '"capabilities"' output || { cat log; exit 1; }
+    touch $out
+  '';
+
+  # The pinned real-world project: its package builds, and its environment
+  # loads it with every dependency.
+  cransays = cransays.package;
+  cransays-runs = pkgs.runCommand "cransays-runs" { } ''
+    ${cransays.env}/bin/Rscript -e '
+      library(cransays)
+      for (package in c("curl", "openssl", "xml2", "stringi", "ragg", "dplyr", "reactable"))
+        stopifnot(requireNamespace(package, quietly = TRUE))
+    '
+    touch $out
+  '';
+
+  # A lockfile the builder must refuse at evaluation: one made from another
+  # renv.lock, one in another format, one with a package of renv.lock
+  # deleted by hand, and one with a package from outside the project that
+  # `src` does not reach. A lock made with another R release builds, with a
+  # warning.
   stale-lock-refused =
     assert refuses {
-      lockFile = helloLockWith { renvLock = "0000"; };
+      lockFile = helloLockWith (lock: lock // { renvLock = "0000"; });
     };
     assert refuses {
-      lockFile = helloLockWith { r = "3.6.3"; };
+      lockFile = helloLockWith (lock: lock // { version = 0; });
     };
     assert refuses {
-      lockFile = helloLockWith { version = 0; };
+      lockFile = helloLockWith (
+        lock: lock // { packages = builtins.filter (package: package.name != "glue") lock.packages; }
+      );
     };
+    assert
+      !refuses {
+        lockFile = helloLockWith (lock: lock // { r = "4.5.3"; });
+      };
     assert
       !(builtins.tryEval
         (buildRenvProject {

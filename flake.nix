@@ -11,10 +11,12 @@
     nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs-lib";
+    # The library the nix-purifiers share: the fetchers of download entries.
+    purifier.url = "github:nix-purifiers/purifier";
   };
 
   outputs =
-    inputs@{ caisson, ... }:
+    inputs@{ caisson, purifier, ... }:
     let
       lib = caisson.lib.caisson.mkLib {
         inherit (caisson.lib.caisson.pins.flake inputs) sources root;
@@ -24,7 +26,7 @@
           "aarch64-linux"
         ];
         projects = {
-          inherit caisson;
+          inherit caisson purifier;
         };
 
         configs = lib: lib.caisson.mkModules ./configs;

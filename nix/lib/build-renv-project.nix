@@ -37,6 +37,9 @@
   # nixpkgs' R packages, read only for the system libraries each package
   # needs.
   rPackages,
+  # The fetcher of download entries, from the shared purifier library
+  # (github:nix-purifiers/purifier).
+  fetchEntry,
 }:
 {
   # The project root, which holds renv.lock.
@@ -53,7 +56,8 @@
   extraNativeBuildInputs ? [ ],
   # Runs R CMD check on the project's package.
   doCheck ? false,
-  # Replaces the built-in fetcher; see fetch.nix.
+  # Replaces nixpkgs' fetchurl for the file downloads, as the place for
+  # credentials or mirrors. It takes the arguments of nixpkgs' fetchurl.
   fetchurl ? null,
   # Filters the project root before it is copied into the store, as the
   # `filter` of builtins.path. The default leaves out renv's project library
@@ -80,8 +84,9 @@ let
     ) lock.packages
   );
 
-  cellar = callPackage ./cellar.nix { } {
+  cellar = callPackage ./cellar.nix { inherit fetchEntry; } {
     inherit lockFile fetchurl;
+    rVersion = R.version;
     localPackages = outsidePackages // localPackages;
   };
 
@@ -89,6 +94,32 @@ let
   # would name packages the cellar does not hold, so the build stops before
   # it starts.
   renvLockHash = builtins.hashFile "sha256" (src + "/renv.lock");
+
+  # Every package renv.lock names needs an entry in the purifier lock. The
+  # packages of priority "base" ship with R, and the lock run skips them.
+  basePackages = [
+    "base"
+    "compiler"
+    "datasets"
+    "graphics"
+    "grDevices"
+    "grid"
+    "methods"
+    "parallel"
+    "splines"
+    "stats"
+    "stats4"
+    "tcltk"
+    "tools"
+    "utils"
+  ];
+  renvLockPackages =
+    builtins.attrNames
+      (builtins.fromJSON (builtins.readFile (src + "/renv.lock"))).Packages;
+  lockedNames = map (package: package.name) lock.packages;
+  missingPackages = lib.filter (
+    name: !(lib.elem name lockedNames || lib.elem name basePackages)
+  ) renvLockPackages;
 
   defaultSrcFilter =
     path: type:
@@ -269,16 +300,21 @@ assert
   renvLockHash == lock.renvLock
   || throw "renv-purifier: renv.lock in ${toString src} changed after ${toString lockFile} was made; run `renv-purifier lock`.";
 assert
-  majorMinor R.version == majorMinor lock.r
-  || throw "renv-purifier: renv.lock was made with R ${lock.r}, and this package set has R ${R.version}. Packages built for one R minor release do not load in another. Pass an `R` of version ${majorMinor lock.r} through buildRenvProject.override.";
-{
-  inherit
-    lock
-    cellar
-    library
-    env
-    ;
-}
+  missingPackages == [ ]
+  || throw "renv-purifier: renv.lock names ${lib.concatStringsSep ", " missingPackages}, which ${toString lockFile} has no entry for; run `renv-purifier lock`.";
+# renv-purifier builds every package from source with the R of the package
+# set, so a lock made with another R release builds as long as its packages
+# compile with this one. Old package versions sometimes do not.
+lib.warnIf (majorMinor R.version != majorMinor lock.r)
+  "renv-purifier: renv.lock was made with R ${lock.r}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor lock.r} through buildRenvProject.override, or update the package with renv."
+  {
+    inherit
+      lock
+      cellar
+      library
+      env
+      ;
+  }
 // lib.optionalAttrs (outputPackage != null) {
   inherit package;
   packages.${outputPackage.name} = package;

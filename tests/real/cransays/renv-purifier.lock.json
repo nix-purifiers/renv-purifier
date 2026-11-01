@@ -1,0 +1,954 @@
+{
+  "version": 1,
+  "renvLock": "fb0d6c3e818789feb3b701850717e1f62ca6b32661ecafee4561234d9ddb167f",
+  "r": "4.6.0",
+  "bioconductor": null,
+  "packages": [
+    {
+      "name": "askpass",
+      "version": "1.2.1",
+      "cellarName": "askpass_1.2.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "askpass/askpass_1.2.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/askpass_1.2.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/askpass/askpass_1.2.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/askpass/1.2.1/askpass_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/askpass_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/askpass/askpass_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/askpass/1.2.1/askpass_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/askpass_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/askpass/askpass_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/askpass/1.2.1/askpass_1.2.1.tar.gz"],
+        "hash": "sha256-MQyiVjhvEpf7O8QLKsiNAP5C2UHkKtKgdhEXvawDYB0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "base64enc",
+      "version": "0.1-6",
+      "cellarName": "base64enc_0.1-6.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "base64enc/base64enc_0.1-6.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/base64enc_0.1-6.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/base64enc/base64enc_0.1-6.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/base64enc/0.1-6/base64enc_0.1-6.tar.gz", "https://cloud.r-project.org/src/contrib/base64enc_0.1-6.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/base64enc/base64enc_0.1-6.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/base64enc/0.1-6/base64enc_0.1-6.tar.gz", "https://R-Forge.R-project.org/src/contrib/base64enc_0.1-6.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/base64enc/base64enc_0.1-6.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/base64enc/0.1-6/base64enc_0.1-6.tar.gz"],
+        "hash": "sha256-/PnhSPhdOWkEk8FYz5ZviPIj0m56VGSHAmx8g3LDTcw="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "brio",
+      "version": "1.1.5",
+      "cellarName": "brio_1.1.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "brio/brio_1.1.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/brio_1.1.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/brio/brio_1.1.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/brio/1.1.5/brio_1.1.5.tar.gz", "https://cloud.r-project.org/src/contrib/brio_1.1.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/brio/brio_1.1.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/brio/1.1.5/brio_1.1.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/brio_1.1.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/brio/brio_1.1.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/brio/1.1.5/brio_1.1.5.tar.gz"],
+        "hash": "sha256-TTqHIRiTXo26ywgFddW0a4Ea8ETro+KkIQJOMufaL3w="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "bslib",
+      "version": "0.11.0",
+      "cellarName": "bslib_0.11.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "bslib/bslib_0.11.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/bslib/bslib_0.11.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/bslib_0.11.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/bslib/0.11.0/bslib_0.11.0.tar.gz", "https://cloud.r-project.org/src/contrib/bslib_0.11.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/bslib/bslib_0.11.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/bslib/0.11.0/bslib_0.11.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/bslib_0.11.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/bslib/bslib_0.11.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/bslib/0.11.0/bslib_0.11.0.tar.gz"],
+        "hash": "sha256-97mCJlOXTeEg6rjIXpw+tX/6k8hlhtxHHkSobHwC9Zk="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "cachem",
+      "version": "1.1.0",
+      "cellarName": "cachem_1.1.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "cachem/cachem_1.1.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/cachem_1.1.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/cachem/cachem_1.1.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/cachem/1.1.0/cachem_1.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/cachem_1.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/cachem/cachem_1.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/cachem/1.1.0/cachem_1.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/cachem_1.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/cachem/cachem_1.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/cachem/1.1.0/cachem_1.1.0.tar.gz"],
+        "hash": "sha256-tqrTI4Nlj7WYYWNV1RLIlSeqIVEvx/tT5YbRNLBqF7Y="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "callr",
+      "version": "3.8.0",
+      "cellarName": "callr_3.8.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "callr/callr_3.8.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/callr_3.8.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/callr/callr_3.8.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/callr/3.8.0/callr_3.8.0.tar.gz", "https://cloud.r-project.org/src/contrib/callr_3.8.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/callr/callr_3.8.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/callr/3.8.0/callr_3.8.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/callr_3.8.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/callr/callr_3.8.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/callr/3.8.0/callr_3.8.0.tar.gz"],
+        "hash": "sha256-xbJAvnwV3nPl94KWyHytoe+vHlB4Hso+48PkVEjBuQ0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "cli",
+      "version": "3.6.6",
+      "cellarName": "cli_3.6.6.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "cli/cli_3.6.6.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/cli_3.6.6.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/cli/cli_3.6.6.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/cli/3.6.6/cli_3.6.6.tar.gz", "https://cloud.r-project.org/src/contrib/cli_3.6.6.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/cli/cli_3.6.6.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/cli/3.6.6/cli_3.6.6.tar.gz", "https://R-Forge.R-project.org/src/contrib/cli_3.6.6.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/cli/cli_3.6.6.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/cli/3.6.6/cli_3.6.6.tar.gz"],
+        "hash": "sha256-J7XnSmsqgmRFfOhBLe1AqntmDgGJS+pL/elWu8S1spQ="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "cpp11",
+      "version": "0.5.5",
+      "cellarName": "cpp11_0.5.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "cpp11/cpp11_0.5.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/cpp11_0.5.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/cpp11/cpp11_0.5.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/cpp11/0.5.5/cpp11_0.5.5.tar.gz", "https://cloud.r-project.org/src/contrib/cpp11_0.5.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/cpp11/cpp11_0.5.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/cpp11/0.5.5/cpp11_0.5.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/cpp11_0.5.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/cpp11/cpp11_0.5.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/cpp11/0.5.5/cpp11_0.5.5.tar.gz"],
+        "hash": "sha256-NL2fahMrjWYfYQoGD94JAENGMDUjmtXdqgEXJ5dCIDA="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "curl",
+      "version": "7.1.0",
+      "cellarName": "curl_7.1.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "curl/curl_7.1.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/curl/curl_7.1.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/curl_7.1.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/curl/7.1.0/curl_7.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/curl_7.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/curl/curl_7.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/curl/7.1.0/curl_7.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/curl_7.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/curl/curl_7.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/curl/7.1.0/curl_7.1.0.tar.gz"],
+        "hash": "sha256-QgZoDTuO+HI4VnM/Ie2AixJuaXe5V6SSotXCDWmi6Cc="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "desc",
+      "version": "1.4.3",
+      "cellarName": "desc_1.4.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "desc/desc_1.4.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/desc_1.4.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/desc/desc_1.4.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/desc/1.4.3/desc_1.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/desc_1.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/desc/desc_1.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/desc/1.4.3/desc_1.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/desc_1.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/desc/desc_1.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/desc/1.4.3/desc_1.4.3.tar.gz"],
+        "hash": "sha256-B3Glzwv6zCJ4S2XU5hcVCDMm529Ss2y0kkxgIOr9bZ8="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "digest",
+      "version": "0.6.39",
+      "cellarName": "digest_0.6.39.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "digest/digest_0.6.39.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/digest_0.6.39.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/digest/digest_0.6.39.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/digest/0.6.39/digest_0.6.39.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/digest_0.6.39.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/digest/digest_0.6.39.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/digest/0.6.39/digest_0.6.39.tar.gz", "https://R-Forge.R-project.org/src/contrib/digest_0.6.39.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/digest/digest_0.6.39.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/digest/0.6.39/digest_0.6.39.tar.gz"],
+        "hash": "sha256-i/BItJstFwdxOPrnWL2la71TJ42UN/L96u35eckKE8k="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "downlit",
+      "version": "0.4.5",
+      "cellarName": "downlit_0.4.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "downlit/downlit_0.4.5.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/downlit_0.4.5.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/downlit/downlit_0.4.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/downlit/0.4.5/downlit_0.4.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/downlit_0.4.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/downlit/downlit_0.4.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/downlit/0.4.5/downlit_0.4.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/downlit_0.4.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/downlit/downlit_0.4.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/downlit/0.4.5/downlit_0.4.5.tar.gz"],
+        "hash": "sha256-tpbOOIqARzi0TrHOsOPwUxswnqkUCPQKDLQ8Y1QbZYs="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "dplyr",
+      "version": "1.2.1",
+      "cellarName": "dplyr_1.2.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "dplyr/dplyr_1.2.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/dplyr_1.2.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/dplyr/dplyr_1.2.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/dplyr/1.2.1/dplyr_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/dplyr_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/dplyr/dplyr_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/dplyr/1.2.1/dplyr_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/dplyr_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/dplyr/dplyr_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/dplyr/1.2.1/dplyr_1.2.1.tar.gz"],
+        "hash": "sha256-+6zNPQu+fClBBYGv0qrQ1XGDxYZ5WLRnimn5WdDSr0M="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "evaluate",
+      "version": "1.0.5",
+      "cellarName": "evaluate_1.0.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "evaluate/evaluate_1.0.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/evaluate_1.0.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/evaluate/evaluate_1.0.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/evaluate/1.0.5/evaluate_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/evaluate_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/evaluate/evaluate_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/evaluate/1.0.5/evaluate_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/evaluate_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/evaluate/evaluate_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/evaluate/1.0.5/evaluate_1.0.5.tar.gz"],
+        "hash": "sha256-Y7G/pA4cNQZjVNLrk6yT3swIRbQVD9iGfQ1At3WFG0Y="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "fansi",
+      "version": "1.0.7",
+      "cellarName": "fansi_1.0.7.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "fansi/fansi_1.0.7.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/fansi_1.0.7.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fansi/fansi_1.0.7.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fansi/1.0.7/fansi_1.0.7.tar.gz", "https://cloud.r-project.org/src/contrib/fansi_1.0.7.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fansi/fansi_1.0.7.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fansi/1.0.7/fansi_1.0.7.tar.gz", "https://R-Forge.R-project.org/src/contrib/fansi_1.0.7.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fansi/fansi_1.0.7.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fansi/1.0.7/fansi_1.0.7.tar.gz"],
+        "hash": "sha256-orerg95wi6lPQMsm3LG7rQHqaRa8MV+ouK8wcqLaY8c="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "fastmap",
+      "version": "1.2.0",
+      "cellarName": "fastmap_1.2.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "fastmap/fastmap_1.2.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/fastmap_1.2.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fastmap/fastmap_1.2.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fastmap/1.2.0/fastmap_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/fastmap_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fastmap/fastmap_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fastmap/1.2.0/fastmap_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/fastmap_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fastmap/fastmap_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fastmap/1.2.0/fastmap_1.2.0.tar.gz"],
+        "hash": "sha256-Rg4qPEI9+JhR+Y9D3pWCf9fGt2c2b7bMI0koNM9xcaI="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "fontawesome",
+      "version": "0.5.3",
+      "cellarName": "fontawesome_0.5.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "fontawesome/fontawesome_0.5.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/fontawesome_0.5.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fontawesome/fontawesome_0.5.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fontawesome/0.5.3/fontawesome_0.5.3.tar.gz", "https://cloud.r-project.org/src/contrib/fontawesome_0.5.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fontawesome/fontawesome_0.5.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fontawesome/0.5.3/fontawesome_0.5.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/fontawesome_0.5.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fontawesome/fontawesome_0.5.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fontawesome/0.5.3/fontawesome_0.5.3.tar.gz"],
+        "hash": "sha256-579VoNsIs8vsfBFAp37kVGUNB6BnPSw401rdhH5PjCY="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "fs",
+      "version": "2.1.0",
+      "cellarName": "fs_2.1.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "fs/fs_2.1.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/fs_2.1.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fs/fs_2.1.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/fs/2.1.0/fs_2.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/fs_2.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fs/fs_2.1.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/fs/2.1.0/fs_2.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/fs_2.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fs/fs_2.1.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/fs/2.1.0/fs_2.1.0.tar.gz"],
+        "hash": "sha256-SJHQ+HJGnKMSQ9N8sdSd7jSOiyGQN/bm6i1miQS/yqU="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "generics",
+      "version": "0.1.4",
+      "cellarName": "generics_0.1.4.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "generics/generics_0.1.4.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/generics_0.1.4.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/generics/generics_0.1.4.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/generics/0.1.4/generics_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/generics_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/generics/generics_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/generics/0.1.4/generics_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/generics_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/generics/generics_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/generics/0.1.4/generics_0.1.4.tar.gz"],
+        "hash": "sha256-73bivQchgxvA1MmvQe/MNnSJ1cqxOjqRGUuqBIduIRA="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "glue",
+      "version": "1.8.1",
+      "cellarName": "glue_1.8.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "glue/glue_1.8.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/glue_1.8.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/glue/glue_1.8.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/glue/1.8.1/glue_1.8.1.tar.gz", "https://cloud.r-project.org/src/contrib/glue_1.8.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/glue/glue_1.8.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/glue/1.8.1/glue_1.8.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/glue_1.8.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/glue/glue_1.8.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/glue/1.8.1/glue_1.8.1.tar.gz"],
+        "hash": "sha256-mTIa7gn/2oSSAsCzY+i0l172kFfyzbk8UmwnBULJUuU="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "highr",
+      "version": "0.12",
+      "cellarName": "highr_0.12.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "highr/highr_0.12.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/highr_0.12.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/highr/highr_0.12.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/highr/0.12/highr_0.12.tar.gz", "https://cloud.r-project.org/src/contrib/highr_0.12.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/highr/highr_0.12.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/highr/0.12/highr_0.12.tar.gz", "https://R-Forge.R-project.org/src/contrib/highr_0.12.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/highr/highr_0.12.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/highr/0.12/highr_0.12.tar.gz"],
+        "hash": "sha256-eSM5lQHsq7Tc7FKGHDxDH83CRdntXgknRozchaNRHhs="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "htmltools",
+      "version": "0.5.9",
+      "cellarName": "htmltools_0.5.9.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "htmltools/htmltools_0.5.9.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/htmltools_0.5.9.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/htmltools/htmltools_0.5.9.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/htmltools/0.5.9/htmltools_0.5.9.tar.gz", "https://cloud.r-project.org/src/contrib/htmltools_0.5.9.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/htmltools/htmltools_0.5.9.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/htmltools/0.5.9/htmltools_0.5.9.tar.gz", "https://R-Forge.R-project.org/src/contrib/htmltools_0.5.9.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/htmltools/htmltools_0.5.9.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/htmltools/0.5.9/htmltools_0.5.9.tar.gz"],
+        "hash": "sha256-svkqWhKrT1kgzAnTtW6DiRAX3EAfgD3w85QoXGu9hzk="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "htmlwidgets",
+      "version": "1.6.4",
+      "cellarName": "htmlwidgets_1.6.4.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "htmlwidgets/htmlwidgets_1.6.4.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/htmlwidgets_1.6.4.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/htmlwidgets/htmlwidgets_1.6.4.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/htmlwidgets/1.6.4/htmlwidgets_1.6.4.tar.gz", "https://cloud.r-project.org/src/contrib/htmlwidgets_1.6.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/htmlwidgets/htmlwidgets_1.6.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/htmlwidgets/1.6.4/htmlwidgets_1.6.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/htmlwidgets_1.6.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/htmlwidgets/htmlwidgets_1.6.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/htmlwidgets/1.6.4/htmlwidgets_1.6.4.tar.gz"],
+        "hash": "sha256-8iYufYnIOAJ+Y0bICGjOnGPVKi8M5aqKipu6QhbuaJo="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "httr2",
+      "version": "1.2.2",
+      "cellarName": "httr2_1.2.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "httr2/httr2_1.2.2.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/Archive/httr2/httr2_1.2.2.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/httr2_1.2.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/httr2/1.2.2/httr2_1.2.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/httr2_1.2.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/httr2/httr2_1.2.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/httr2/1.2.2/httr2_1.2.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/httr2_1.2.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/httr2/httr2_1.2.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/httr2/1.2.2/httr2_1.2.2.tar.gz"],
+        "hash": "sha256-pecSj+JuCDg52FwpaUEsf6+sphQLVgEVbAw0csxcReE="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "jquerylib",
+      "version": "0.1.4",
+      "cellarName": "jquerylib_0.1.4.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "jquerylib/jquerylib_0.1.4.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/jquerylib_0.1.4.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/jquerylib/jquerylib_0.1.4.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/jquerylib/0.1.4/jquerylib_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/jquerylib_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/jquerylib/jquerylib_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/jquerylib/0.1.4/jquerylib_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/jquerylib_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/jquerylib/jquerylib_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/jquerylib/0.1.4/jquerylib_0.1.4.tar.gz"],
+        "hash": "sha256-ZXOkYyxdUxdSbuq4lrgQKEurVdgt7q3qcMklYgO7j3c="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "jsonlite",
+      "version": "2.0.0",
+      "cellarName": "jsonlite_2.0.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "jsonlite/jsonlite_2.0.0.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/jsonlite_2.0.0.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/jsonlite/jsonlite_2.0.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/jsonlite/2.0.0/jsonlite_2.0.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/jsonlite_2.0.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/jsonlite/jsonlite_2.0.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/jsonlite/2.0.0/jsonlite_2.0.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/jsonlite_2.0.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/jsonlite/jsonlite_2.0.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/jsonlite/2.0.0/jsonlite_2.0.0.tar.gz"],
+        "hash": "sha256-deuRDIKzUOwz8JR3naD4e/8VTCMuSuOcmJapuJ86yC0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "knitr",
+      "version": "1.51",
+      "cellarName": "knitr_1.51.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "knitr/knitr_1.51.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/knitr/knitr_1.51.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/knitr_1.51.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/knitr/1.51/knitr_1.51.tar.gz", "https://cloud.r-project.org/src/contrib/knitr_1.51.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/knitr/knitr_1.51.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/knitr/1.51/knitr_1.51.tar.gz", "https://R-Forge.R-project.org/src/contrib/knitr_1.51.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/knitr/knitr_1.51.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/knitr/1.51/knitr_1.51.tar.gz"],
+        "hash": "sha256-BCQJuSWDjmbpEkaSzg0Tg4cM2WL8L+LASTCXpFJWE44="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "lifecycle",
+      "version": "1.0.5",
+      "cellarName": "lifecycle_1.0.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "lifecycle/lifecycle_1.0.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/lifecycle_1.0.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/lifecycle/lifecycle_1.0.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/lifecycle/1.0.5/lifecycle_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/lifecycle_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/lifecycle/lifecycle_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/lifecycle/1.0.5/lifecycle_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/lifecycle_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/lifecycle/lifecycle_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/lifecycle/1.0.5/lifecycle_1.0.5.tar.gz"],
+        "hash": "sha256-PKJFHcGklXgyy42NyYI7IzeLWh2bsMnLwhLRSEnYOrc="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "lubridate",
+      "version": "1.9.5",
+      "cellarName": "lubridate_1.9.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "lubridate/lubridate_1.9.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/lubridate_1.9.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/lubridate/lubridate_1.9.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/lubridate/1.9.5/lubridate_1.9.5.tar.gz", "https://cloud.r-project.org/src/contrib/lubridate_1.9.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/lubridate/lubridate_1.9.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/lubridate/1.9.5/lubridate_1.9.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/lubridate_1.9.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/lubridate/lubridate_1.9.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/lubridate/1.9.5/lubridate_1.9.5.tar.gz"],
+        "hash": "sha256-hvBiFksBaM71yMqzc5ac+eyCxsI7/hH9kpWuE/DZ7Nw="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "magrittr",
+      "version": "2.0.5",
+      "cellarName": "magrittr_2.0.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "magrittr/magrittr_2.0.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/magrittr_2.0.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/magrittr/magrittr_2.0.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/magrittr/2.0.5/magrittr_2.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/magrittr_2.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/magrittr/magrittr_2.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/magrittr/2.0.5/magrittr_2.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/magrittr_2.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/magrittr/magrittr_2.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/magrittr/2.0.5/magrittr_2.0.5.tar.gz"],
+        "hash": "sha256-nY7MouS+nzKhgT6eVMcEgMANPfYQ/yP+RN/cp7E/Es0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "memoise",
+      "version": "2.0.1",
+      "cellarName": "memoise_2.0.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "memoise/memoise_2.0.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/memoise_2.0.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/memoise/memoise_2.0.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/memoise/2.0.1/memoise_2.0.1.tar.gz", "https://cloud.r-project.org/src/contrib/memoise_2.0.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/memoise/memoise_2.0.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/memoise/2.0.1/memoise_2.0.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/memoise_2.0.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/memoise/memoise_2.0.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/memoise/2.0.1/memoise_2.0.1.tar.gz"],
+        "hash": "sha256-0sEBjnCoVIu/lZz4Ll8FRYjJy2Op7PshAokxzwBhpIs="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "mime",
+      "version": "0.13",
+      "cellarName": "mime_0.13.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "mime/mime_0.13.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/mime_0.13.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/mime/mime_0.13.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/mime/0.13/mime_0.13.tar.gz", "https://cloud.r-project.org/src/contrib/mime_0.13.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/mime/mime_0.13.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/mime/0.13/mime_0.13.tar.gz", "https://R-Forge.R-project.org/src/contrib/mime_0.13.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/mime/mime_0.13.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/mime/0.13/mime_0.13.tar.gz"],
+        "hash": "sha256-8lGD/lzYyvF5Akr/GdhszGy3JaniT3aWBuIVkll22LY="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "openssl",
+      "version": "2.4.2",
+      "cellarName": "openssl_2.4.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "openssl/openssl_2.4.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/openssl_2.4.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/openssl/openssl_2.4.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/openssl/2.4.2/openssl_2.4.2.tar.gz", "https://cloud.r-project.org/src/contrib/openssl_2.4.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/openssl/openssl_2.4.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/openssl/2.4.2/openssl_2.4.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/openssl_2.4.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/openssl/openssl_2.4.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/openssl/2.4.2/openssl_2.4.2.tar.gz"],
+        "hash": "sha256-J9lfQNuCGB+Y+GyssJvSgaodFPhFZsQimyo4kDTRlz0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "otel",
+      "version": "0.2.0",
+      "cellarName": "otel_0.2.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "otel/otel_0.2.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/otel_0.2.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/otel/otel_0.2.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/otel/0.2.0/otel_0.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/otel_0.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/otel/otel_0.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/otel/0.2.0/otel_0.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/otel_0.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/otel/otel_0.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/otel/0.2.0/otel_0.2.0.tar.gz"],
+        "hash": "sha256-U6bFtNWDuGBKCXVxRF8emUluJGtKaNzEOnTKeZWHP0k="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "pillar",
+      "version": "1.11.1",
+      "cellarName": "pillar_1.11.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "pillar/pillar_1.11.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/pillar_1.11.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/pillar/pillar_1.11.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/pillar/1.11.1/pillar_1.11.1.tar.gz", "https://cloud.r-project.org/src/contrib/pillar_1.11.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/pillar/pillar_1.11.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/pillar/1.11.1/pillar_1.11.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/pillar_1.11.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/pillar/pillar_1.11.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/pillar/1.11.1/pillar_1.11.1.tar.gz"],
+        "hash": "sha256-1no3RmmCBrVsL45UV+SDQ63ofobLv3fVZJMapPnMDk4="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "pkgconfig",
+      "version": "2.0.3",
+      "cellarName": "pkgconfig_2.0.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "pkgconfig/pkgconfig_2.0.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/pkgconfig_2.0.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/pkgconfig/pkgconfig_2.0.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/pkgconfig/2.0.3/pkgconfig_2.0.3.tar.gz", "https://cloud.r-project.org/src/contrib/pkgconfig_2.0.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/pkgconfig/pkgconfig_2.0.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/pkgconfig/2.0.3/pkgconfig_2.0.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/pkgconfig_2.0.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/pkgconfig/pkgconfig_2.0.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/pkgconfig/2.0.3/pkgconfig_2.0.3.tar.gz"],
+        "hash": "sha256-//5WJftpEvPEuwaFYewwJbFWRfwOQAe45Dq3j4fk+K8="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "pkgdown",
+      "version": "2.2.0",
+      "cellarName": "pkgdown_2.2.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "pkgdown/pkgdown_2.2.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/pkgdown/pkgdown_2.2.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/pkgdown_2.2.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/pkgdown/2.2.0/pkgdown_2.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/pkgdown_2.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/pkgdown/pkgdown_2.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/pkgdown/2.2.0/pkgdown_2.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/pkgdown_2.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/pkgdown/pkgdown_2.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/pkgdown/2.2.0/pkgdown_2.2.0.tar.gz"],
+        "hash": "sha256-p7z9RDbI5mLNCiNZdYtVTBVMjymcEUcfY2HOhEsNN6o="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "prettyunits",
+      "version": "1.2.0",
+      "cellarName": "prettyunits_1.2.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "prettyunits/prettyunits_1.2.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/prettyunits_1.2.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/prettyunits/prettyunits_1.2.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/prettyunits/1.2.0/prettyunits_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/prettyunits_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/prettyunits/prettyunits_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/prettyunits/1.2.0/prettyunits_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/prettyunits_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/prettyunits/prettyunits_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/prettyunits/1.2.0/prettyunits_1.2.0.tar.gz"],
+        "hash": "sha256-LAK7mbjhTz7hzfzBCwglft+Q3I6jtn+YB273Se7mkNM="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "processx",
+      "version": "3.9.0",
+      "cellarName": "processx_3.9.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "processx/processx_3.9.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/processx_3.9.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/processx/processx_3.9.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/processx/3.9.0/processx_3.9.0.tar.gz", "https://cloud.r-project.org/src/contrib/processx_3.9.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/processx/processx_3.9.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/processx/3.9.0/processx_3.9.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/processx_3.9.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/processx/processx_3.9.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/processx/3.9.0/processx_3.9.0.tar.gz"],
+        "hash": "sha256-DWiJ4kXGu6XiTI6vx2eI4kGG2tM93rSFJ8qS7Z6bHBA="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "ps",
+      "version": "1.9.3",
+      "cellarName": "ps_1.9.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "ps/ps_1.9.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/ps_1.9.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/ps/ps_1.9.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/ps/1.9.3/ps_1.9.3.tar.gz", "https://cloud.r-project.org/src/contrib/ps_1.9.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/ps/ps_1.9.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/ps/1.9.3/ps_1.9.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/ps_1.9.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/ps/ps_1.9.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/ps/1.9.3/ps_1.9.3.tar.gz"],
+        "hash": "sha256-d4/gmYQtmhaAo+5/t+0jhxsrcvHBomKzxhy64i3nFpc="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "purrr",
+      "version": "1.2.2",
+      "cellarName": "purrr_1.2.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "purrr/purrr_1.2.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/purrr_1.2.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/purrr/purrr_1.2.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/purrr/1.2.2/purrr_1.2.2.tar.gz", "https://cloud.r-project.org/src/contrib/purrr_1.2.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/purrr/purrr_1.2.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/purrr/1.2.2/purrr_1.2.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/purrr_1.2.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/purrr/purrr_1.2.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/purrr/1.2.2/purrr_1.2.2.tar.gz"],
+        "hash": "sha256-w1BAW/6DgVQXIGseI+cWenv1lhRsorDUkqtPGg7UlvQ="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "R6",
+      "version": "2.6.1",
+      "cellarName": "R6_2.6.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "R6/R6_2.6.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/R6_2.6.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/R6/R6_2.6.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/R6/2.6.1/R6_2.6.1.tar.gz", "https://cloud.r-project.org/src/contrib/R6_2.6.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/R6/R6_2.6.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/R6/2.6.1/R6_2.6.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/R6_2.6.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/R6/R6_2.6.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/R6/2.6.1/R6_2.6.1.tar.gz"],
+        "hash": "sha256-WGrDtJz1MpSleTWhUHk6mU21IpUJ/qt8UcfRsgc9+RA="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "ragg",
+      "version": "1.5.2",
+      "cellarName": "ragg_1.5.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "ragg/ragg_1.5.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/ragg_1.5.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/ragg/ragg_1.5.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/ragg/1.5.2/ragg_1.5.2.tar.gz", "https://cloud.r-project.org/src/contrib/ragg_1.5.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/ragg/ragg_1.5.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/ragg/1.5.2/ragg_1.5.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/ragg_1.5.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/ragg/ragg_1.5.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/ragg/1.5.2/ragg_1.5.2.tar.gz"],
+        "hash": "sha256-9tWG5XHRYJkXnLVMd0u+uyvo8ejtg1dPgyYQeNo+NMo="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "rappdirs",
+      "version": "0.3.4",
+      "cellarName": "rappdirs_0.3.4.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "rappdirs/rappdirs_0.3.4.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/rappdirs_0.3.4.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/rappdirs/rappdirs_0.3.4.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/rappdirs/0.3.4/rappdirs_0.3.4.tar.gz", "https://cloud.r-project.org/src/contrib/rappdirs_0.3.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rappdirs/rappdirs_0.3.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rappdirs/0.3.4/rappdirs_0.3.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/rappdirs_0.3.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rappdirs/rappdirs_0.3.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rappdirs/0.3.4/rappdirs_0.3.4.tar.gz"],
+        "hash": "sha256-S85bxnk+/BNmjJGQjEe5D1jmhRobBrC/SQ8MQBp2Um8="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "reactable",
+      "version": "0.4.5",
+      "cellarName": "reactable_0.4.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "reactable/reactable_0.4.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/reactable_0.4.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/reactable/reactable_0.4.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/reactable/0.4.5/reactable_0.4.5.tar.gz", "https://cloud.r-project.org/src/contrib/reactable_0.4.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/reactable/reactable_0.4.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/reactable/0.4.5/reactable_0.4.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/reactable_0.4.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/reactable/reactable_0.4.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/reactable/0.4.5/reactable_0.4.5.tar.gz"],
+        "hash": "sha256-/d+kqYjZU2BUHNJWkbyXgm6476wSVjgiitvdZg3GFUU="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "reactR",
+      "version": "0.6.1",
+      "cellarName": "reactR_0.6.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "reactR/reactR_0.6.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/reactR_0.6.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/reactR/reactR_0.6.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/reactR/0.6.1/reactR_0.6.1.tar.gz", "https://cloud.r-project.org/src/contrib/reactR_0.6.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/reactR/reactR_0.6.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/reactR/0.6.1/reactR_0.6.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/reactR_0.6.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/reactR/reactR_0.6.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/reactR/0.6.1/reactR_0.6.1.tar.gz"],
+        "hash": "sha256-/8J/PF6nGWYBm/+F5BNE2wCWJkvFbc+CkyyRwgIqY7k="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "renv",
+      "version": "1.2.3",
+      "cellarName": "renv_1.2.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "renv/renv_1.2.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/renv/renv_1.2.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/renv_1.2.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/renv/1.2.3/renv_1.2.3.tar.gz", "https://cloud.r-project.org/src/contrib/renv_1.2.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/renv/renv_1.2.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/renv/1.2.3/renv_1.2.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/renv_1.2.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/renv/renv_1.2.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/renv/1.2.3/renv_1.2.3.tar.gz"],
+        "hash": "sha256-ZwcZ9XxTLSksHdeT+Pp9BuLW+RIF3JDdlH5+jAWlrgY="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "rlang",
+      "version": "1.2.0",
+      "cellarName": "rlang_1.2.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "rlang/rlang_1.2.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/rlang/rlang_1.2.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/rlang_1.2.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/rlang/1.2.0/rlang_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/rlang_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rlang/rlang_1.2.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rlang/1.2.0/rlang_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/rlang_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rlang/rlang_1.2.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rlang/1.2.0/rlang_1.2.0.tar.gz"],
+        "hash": "sha256-JJGbhJ+DFVbFLbJXUArZ0aEuI6bZQH+ixHZAkoMzVr0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "rmarkdown",
+      "version": "2.31",
+      "cellarName": "rmarkdown_2.31.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "rmarkdown/rmarkdown_2.31.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/rmarkdown/rmarkdown_2.31.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/rmarkdown_2.31.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/rmarkdown/2.31/rmarkdown_2.31.tar.gz", "https://cloud.r-project.org/src/contrib/rmarkdown_2.31.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rmarkdown/rmarkdown_2.31.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/rmarkdown/2.31/rmarkdown_2.31.tar.gz", "https://R-Forge.R-project.org/src/contrib/rmarkdown_2.31.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rmarkdown/rmarkdown_2.31.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/rmarkdown/2.31/rmarkdown_2.31.tar.gz"],
+        "hash": "sha256-vfdrbXiBuWhBinrud73neFOkuyJsuXFpa0fTGp1nSBI="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "sass",
+      "version": "0.4.10",
+      "cellarName": "sass_0.4.10.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "sass/sass_0.4.10.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/sass_0.4.10.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/sass/sass_0.4.10.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/sass/0.4.10/sass_0.4.10.tar.gz", "https://cloud.r-project.org/src/contrib/sass_0.4.10.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/sass/sass_0.4.10.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/sass/0.4.10/sass_0.4.10.tar.gz", "https://R-Forge.R-project.org/src/contrib/sass_0.4.10.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/sass/sass_0.4.10.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/sass/0.4.10/sass_0.4.10.tar.gz"],
+        "hash": "sha256-X5hq2vKaVWX7wodxtZYc00J9MX8KPoYHzpPK9J9rnM4="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "stringi",
+      "version": "1.8.7",
+      "cellarName": "stringi_1.8.7.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "stringi/stringi_1.8.7.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/stringi/stringi_1.8.7.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/stringi_1.8.7.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/stringi/1.8.7/stringi_1.8.7.tar.gz", "https://cloud.r-project.org/src/contrib/stringi_1.8.7.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/stringi/stringi_1.8.7.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/stringi/1.8.7/stringi_1.8.7.tar.gz", "https://R-Forge.R-project.org/src/contrib/stringi_1.8.7.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/stringi/stringi_1.8.7.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/stringi/1.8.7/stringi_1.8.7.tar.gz"],
+        "hash": "sha256-kI51wJhGyxvb7CsICnwxHrPH8/rrA4vlAatC1eA/b44="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "stringr",
+      "version": "1.6.0",
+      "cellarName": "stringr_1.6.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "stringr/stringr_1.6.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/stringr_1.6.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/stringr/stringr_1.6.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/stringr/1.6.0/stringr_1.6.0.tar.gz", "https://cloud.r-project.org/src/contrib/stringr_1.6.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/stringr/stringr_1.6.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/stringr/1.6.0/stringr_1.6.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/stringr_1.6.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/stringr/stringr_1.6.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/stringr/1.6.0/stringr_1.6.0.tar.gz"],
+        "hash": "sha256-xmBRsfKoHsczwwH/fT/3tXyX9z0rhuMpsDe4Y/TCAQ0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "sys",
+      "version": "3.4.3",
+      "cellarName": "sys_3.4.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "sys/sys_3.4.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/sys_3.4.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/sys/sys_3.4.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/sys/3.4.3/sys_3.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/sys_3.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/sys/sys_3.4.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/sys/3.4.3/sys_3.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/sys_3.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/sys/sys_3.4.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/sys/3.4.3/sys_3.4.3.tar.gz"],
+        "hash": "sha256-rql3CkEr0ML5YARJI4zWm48WEEsFJbNtS/TwIxFWybs="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "systemfonts",
+      "version": "1.3.2",
+      "cellarName": "systemfonts_1.3.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "systemfonts/systemfonts_1.3.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/systemfonts_1.3.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/systemfonts/systemfonts_1.3.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/systemfonts/1.3.2/systemfonts_1.3.2.tar.gz", "https://cloud.r-project.org/src/contrib/systemfonts_1.3.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/systemfonts/systemfonts_1.3.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/systemfonts/1.3.2/systemfonts_1.3.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/systemfonts_1.3.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/systemfonts/systemfonts_1.3.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/systemfonts/1.3.2/systemfonts_1.3.2.tar.gz"],
+        "hash": "sha256-YG8BWkgUI4sli+9KT/7v5bOn6FmHniWYzR933gC61LQ="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "textshaping",
+      "version": "1.0.5",
+      "cellarName": "textshaping_1.0.5.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "textshaping/textshaping_1.0.5.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/textshaping_1.0.5.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/textshaping/textshaping_1.0.5.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/textshaping/1.0.5/textshaping_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/textshaping_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/textshaping/textshaping_1.0.5.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/textshaping/1.0.5/textshaping_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/textshaping_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/textshaping/textshaping_1.0.5.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/textshaping/1.0.5/textshaping_1.0.5.tar.gz"],
+        "hash": "sha256-m8NkzRc8CeQycDRPfe38Kxtre2K43j7TtCWccp0SRMU="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "tibble",
+      "version": "3.3.1",
+      "cellarName": "tibble_3.3.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "tibble/tibble_3.3.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/tibble_3.3.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tibble/tibble_3.3.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tibble/3.3.1/tibble_3.3.1.tar.gz", "https://cloud.r-project.org/src/contrib/tibble_3.3.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tibble/tibble_3.3.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tibble/3.3.1/tibble_3.3.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/tibble_3.3.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tibble/tibble_3.3.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tibble/3.3.1/tibble_3.3.1.tar.gz"],
+        "hash": "sha256-7H20gnRLPzfsMdRTNBcXOkOjfS2hXzxytqoobSfZcWQ="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "tidyr",
+      "version": "1.3.2",
+      "cellarName": "tidyr_1.3.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "tidyr/tidyr_1.3.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/tidyr_1.3.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tidyr/tidyr_1.3.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tidyr/1.3.2/tidyr_1.3.2.tar.gz", "https://cloud.r-project.org/src/contrib/tidyr_1.3.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tidyr/tidyr_1.3.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tidyr/1.3.2/tidyr_1.3.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/tidyr_1.3.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tidyr/tidyr_1.3.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tidyr/1.3.2/tidyr_1.3.2.tar.gz"],
+        "hash": "sha256-mNnwrSaWUd+QQDdzFp9v9k3kDGwXREVRoz52WmbzmOY="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "tidyselect",
+      "version": "1.2.1",
+      "cellarName": "tidyselect_1.2.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "tidyselect/tidyselect_1.2.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/tidyselect_1.2.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tidyselect/tidyselect_1.2.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tidyselect/1.2.1/tidyselect_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/tidyselect_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tidyselect/tidyselect_1.2.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tidyselect/1.2.1/tidyselect_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/tidyselect_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tidyselect/tidyselect_1.2.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tidyselect/1.2.1/tidyselect_1.2.1.tar.gz"],
+        "hash": "sha256-n1gDKnHFDTKdnFE5foV5rLyvVyQVUMmL7sm9palJfGM="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "timechange",
+      "version": "0.4.0",
+      "cellarName": "timechange_0.4.0.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "timechange/timechange_0.4.0.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/timechange_0.4.0.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/timechange/timechange_0.4.0.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/timechange/0.4.0/timechange_0.4.0.tar.gz", "https://cloud.r-project.org/src/contrib/timechange_0.4.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/timechange/timechange_0.4.0.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/timechange/0.4.0/timechange_0.4.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/timechange_0.4.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/timechange/timechange_0.4.0.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/timechange/0.4.0/timechange_0.4.0.tar.gz"],
+        "hash": "sha256-2sV/4ECqVnl8EkKYj37AqXn/7Nak0AXdRNdaDHY1eV0="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "tinytex",
+      "version": "0.59",
+      "cellarName": "tinytex_0.59.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "tinytex/tinytex_0.59.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tinytex/tinytex_0.59.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/tinytex_0.59.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/tinytex/0.59/tinytex_0.59.tar.gz", "https://cloud.r-project.org/src/contrib/tinytex_0.59.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tinytex/tinytex_0.59.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/tinytex/0.59/tinytex_0.59.tar.gz", "https://R-Forge.R-project.org/src/contrib/tinytex_0.59.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tinytex/tinytex_0.59.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/tinytex/0.59/tinytex_0.59.tar.gz"],
+        "hash": "sha256-PbDy5RVv8tBw6p4aehRkEzavk19b2NQi1GUAX+Bon2w="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "utf8",
+      "version": "1.2.6",
+      "cellarName": "utf8_1.2.6.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "utf8/utf8_1.2.6.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/utf8_1.2.6.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/utf8/utf8_1.2.6.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/utf8/1.2.6/utf8_1.2.6.tar.gz", "https://cloud.r-project.org/src/contrib/utf8_1.2.6.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/utf8/utf8_1.2.6.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/utf8/1.2.6/utf8_1.2.6.tar.gz", "https://R-Forge.R-project.org/src/contrib/utf8_1.2.6.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/utf8/utf8_1.2.6.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/utf8/1.2.6/utf8_1.2.6.tar.gz"],
+        "hash": "sha256-VkoyLWHbnc0fp+4TQ0KX+XFmWrUXf3FrysNEBapVA3w="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "vctrs",
+      "version": "0.7.3",
+      "cellarName": "vctrs_0.7.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "vctrs/vctrs_0.7.3.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/vctrs_0.7.3.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/vctrs/vctrs_0.7.3.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/vctrs/0.7.3/vctrs_0.7.3.tar.gz", "https://cloud.r-project.org/src/contrib/vctrs_0.7.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/vctrs/vctrs_0.7.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/vctrs/0.7.3/vctrs_0.7.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/vctrs_0.7.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/vctrs/vctrs_0.7.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/vctrs/0.7.3/vctrs_0.7.3.tar.gz"],
+        "hash": "sha256-LRhDn3aLV8jAnkftnue1HOsOvKRLvSlIeLqaSodkxK4="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "whisker",
+      "version": "0.4.1",
+      "cellarName": "whisker_0.4.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "whisker/whisker_0.4.1.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/whisker_0.4.1.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/Archive/whisker/whisker_0.4.1.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/whisker/0.4.1/whisker_0.4.1.tar.gz", "https://cloud.r-project.org/src/contrib/whisker_0.4.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/whisker/whisker_0.4.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/whisker/0.4.1/whisker_0.4.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/whisker_0.4.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/whisker/whisker_0.4.1.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/whisker/0.4.1/whisker_0.4.1.tar.gz"],
+        "hash": "sha256-ZKlM+0rDPsAdOgVnv88DvXursvYf4UY9AqpcrCWGyes="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "withr",
+      "version": "3.0.2",
+      "cellarName": "withr_3.0.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "withr/withr_3.0.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/withr/withr_3.0.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/withr_3.0.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/withr/3.0.2/withr_3.0.2.tar.gz", "https://cloud.r-project.org/src/contrib/withr_3.0.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/withr/withr_3.0.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/withr/3.0.2/withr_3.0.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/withr_3.0.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/withr/withr_3.0.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/withr/3.0.2/withr_3.0.2.tar.gz"],
+        "hash": "sha256-9YR3edvIb/rcPlJc9xtBadwQKBmH8oOcZ9lWTDGwJ7g="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "xfun",
+      "version": "0.58",
+      "cellarName": "xfun_0.58.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "xfun/xfun_0.58.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/xfun/xfun_0.58.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/xfun_0.58.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/xfun/0.58/xfun_0.58.tar.gz", "https://cloud.r-project.org/src/contrib/xfun_0.58.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/xfun/xfun_0.58.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/xfun/0.58/xfun_0.58.tar.gz", "https://R-Forge.R-project.org/src/contrib/xfun_0.58.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/xfun/xfun_0.58.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/xfun/0.58/xfun_0.58.tar.gz"],
+        "hash": "sha256-O7QYr5qXfBtEbugCglrE8z9Pn874Op/vFskTvHOZXpE="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "xml2",
+      "version": "1.5.2",
+      "cellarName": "xml2_1.5.2.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "xml2/xml2_1.5.2.tar.gz",
+        "url": "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/xml2/xml2_1.5.2.tar.gz",
+        "mirrors": ["https://packagemanager.posit.co/cran/latest/src/contrib/xml2_1.5.2.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/xml2/1.5.2/xml2_1.5.2.tar.gz", "https://cloud.r-project.org/src/contrib/xml2_1.5.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/xml2/xml2_1.5.2.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/xml2/1.5.2/xml2_1.5.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/xml2_1.5.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/xml2/xml2_1.5.2.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/xml2/1.5.2/xml2_1.5.2.tar.gz"],
+        "hash": "sha256-JO8sE15uaTAe+vHnDg8wgmmjg6SBDJmHNxnPLNLDu/U="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "yaml",
+      "version": "2.3.12",
+      "cellarName": "yaml_2.3.12.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "yaml/yaml_2.3.12.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/yaml_2.3.12.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/yaml/yaml_2.3.12.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/yaml/2.3.12/yaml_2.3.12.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/yaml_2.3.12.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/yaml/yaml_2.3.12.tar.gz", "https://packagemanager.posit.co/cran/latest/src/contrib/Archive/yaml/2.3.12/yaml_2.3.12.tar.gz", "https://R-Forge.R-project.org/src/contrib/yaml_2.3.12.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/yaml/yaml_2.3.12.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/yaml/2.3.12/yaml_2.3.12.tar.gz"],
+        "hash": "sha256-gMzz3ehREz7z4zO4GKgXwpbGzNrPxHCc1GaZUonNVWw="
+      },
+      "local": null,
+      "outside": null
+    }
+  ],
+  "inline": [],
+  "outputs": {
+    "package": {
+      "name": "cransays",
+      "version": "0.0.0.9000",
+      "tarball": "cransays_0.0.0.9000.tar.gz"
+    }
+  }
+}

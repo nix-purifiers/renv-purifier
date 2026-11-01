@@ -3,11 +3,14 @@
 #
 # Tests what runs outside the Nix sandbox, on copies of the fixtures:
 #
-# - the lock run reproduces the committed lockfiles, apart from the copy of
-#   the Bioconductor configuration file, which changes with every release
+# - the lock run reproduces the committed lockfiles byte for byte
 # - `renv-purifier build` builds an R environment that runs the project
 # - `renv-purifier restore` installs the project library with every network
 #   request refused
+# - adding a dependency to renv.lock, relocking and building works
+# - every common mistake stops with a message that names the fix: a
+#   renv.lock with merge conflict markers, a malformed purifier lockfile, a
+#   stale lock, a package missing from the lock, and an edited hash
 # - `renv-purifier publish` makes a repository install.packages() installs
 #   the package from
 #
@@ -29,12 +32,34 @@ export RENV_PATHS_ROOT="$work/renv-root"
 export RENV_PATHS_SANDBOX="$work/renv-sandbox"
 export RENV_PATHS_LIBRARY="$work/hello/renv/library"
 
-echo "== lock run"
-for fixture in hello sources; do
+# Runs a command that must fail, and checks that its output names the fix.
+fails_with() {
+  local expected="$1"
+  shift
+  local output
+  if output=$("$@" 2>&1); then
+    echo "expected a failure: $*" >&2
+    exit 1
+  fi
+  if ! grep -qF -- "$expected" <<<"$output"; then
+    echo "expected \"$expected\" from: $*" >&2
+    echo "$output" >&2
+    exit 1
+  fi
+}
+
+# A copy of the hello fixture under a new name.
+copy_hello() {
+  cp -r "$work/hello" "$work/$1"
+  rm -rf "$work/$1/renv/library" "$work/$1/result-"*
+}
+
+echo "== lock run reproduces the lockfiles"
+for fixture in hello sources editor; do
+  start=$(date +%s)
   "$cli" lock "$work/$fixture"
-  diff \
-    <(jq 'del(.inline[].contents)' "$root/tests/fixtures/$fixture/renv-purifier.lock.json") \
-    <(jq 'del(.inline[].contents)' "$work/$fixture/renv-purifier.lock.json")
+  echo "relocked $fixture in $(($(date +%s) - start))s"
+  cmp "$root/tests/fixtures/$fixture/renv-purifier.lock.json" "$work/$fixture/renv-purifier.lock.json"
 done
 
 echo "== build"
@@ -60,6 +85,40 @@ echo "== restore, offline"
       stopifnot(requireNamespace(package, quietly = TRUE))
   '
 )
+
+echo "== add a dependency, relock and build"
+# renv::record() adds crayon to renv.lock from repository metadata, as
+# renv::install() and renv::snapshot() would after installing it. With
+# `enrich = FALSE`, the record holds the package, its version and its
+# repository.
+copy_hello added
+renv=$(nix build --no-link --print-out-paths 'nixpkgs#rPackages.renv')
+(
+  cd "$work/added"
+  R_LIBS_SITE="$renv/library" nix run 'nixpkgs#R' -- --vanilla --no-echo -e 'renv::record("crayon@1.5.3", enrich = FALSE)'
+)
+fails_with "changed after" "$cli" build "$work/added"
+"$cli" lock "$work/added"
+"$cli" build "$work/added"
+"$work/added/result-env/bin/Rscript" -e 'stopifnot(packageVersion("crayon") == "1.5.3")'
+
+echo "== mistakes name their fix"
+copy_hello conflict
+sed -i '0,/"Packages": {/s//"Packages": {\n<<<<<<< Updated upstream/' "$work/conflict/renv.lock"
+fails_with "is not valid JSON (look for merge conflict markers)" "$cli" lock "$work/conflict"
+
+copy_hello malformed
+head -c 200 "$root/tests/fixtures/hello/renv-purifier.lock.json" > "$work/malformed/renv-purifier.lock.json"
+fails_with "renv-purifier.lock.json is not valid JSON; run renv-purifier lock" "$cli" build "$work/malformed"
+
+copy_hello missing
+jq '.packages |= map(select(.name != "glue"))' "$root/tests/fixtures/hello/renv-purifier.lock.json" > "$work/missing/renv-purifier.lock.json"
+fails_with "renv.lock names glue, which" "$cli" build "$work/missing"
+
+copy_hello tampered
+jq '(.packages[] | select(.name == "glue") | .download.hash) = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="' \
+  "$root/tests/fixtures/hello/renv-purifier.lock.json" > "$work/tampered/renv-purifier.lock.json"
+fails_with "hash mismatch" "$cli" build "$work/tampered"
 
 echo "== publish"
 "$cli" publish "$work/repository" "$work/hello"

@@ -19,6 +19,12 @@
 let
   # The lock run reads and writes JSON with jsonlite.
   R = rWrapper.override { packages = [ rPackages.jsonlite ]; };
+
+  # The shared purifier library at the revision this flake locks, as a
+  # locked flake reference for cli.nix.
+  purifierLock = (builtins.fromJSON (builtins.readFile ../../flake.lock)).nodes.purifier.locked;
+  narHash = builtins.replaceStrings [ "+" "/" "=" ] [ "%2B" "%2F" "%3D" ] purifierLock.narHash;
+  purifier = "github:${purifierLock.owner}/${purifierLock.repo}/${purifierLock.rev}?narHash=${narHash}";
 in
 writeShellApplication {
   name = "renv-purifier";
@@ -36,6 +42,7 @@ writeShellApplication {
     # lock.R and the urls.R it reads, from this directory.
     RENV_PURIFIER_SCRIPTS = ./.;
     RENV_PURIFIER_NIXPKGS = path;
+    RENV_PURIFIER_LIBRARY = purifier;
     RENV_PURIFIER_FORMAT = toString (import ../../nix/lib/lock-version.nix);
   };
   text = builtins.readFile ./renv-purifier.sh;
