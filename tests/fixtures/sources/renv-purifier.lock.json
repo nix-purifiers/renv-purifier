@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "renvLock": "2ef74cb2f9c8897cb7b46ea8c25edc136b1a87a0e1bdbd737ae39b4072404fdb",
+  "r": "4.6.1",
+  "bioconductor": null,
+  "packages": [
+    {
+      "name": "greeter",
+      "version": "0.2.0",
+      "cellarName": "greeter_0.2.0.tar.gz",
+      "convert": "external",
+      "download": null,
+      "local": null,
+      "outside": "../shared/greeter"
+    },
+    {
+      "name": "praise",
+      "version": "1.0.0",
+      "cellarName": "praise_1.0.0.tar.gz",
+      "convert": "zip",
+      "download": {
+        "path": "praise/praise_1.0.0.zip",
+        "url": "https://github.com/rladies/praise/archive/094469afaf033af00aeb46527970f1db22f4d49d.zip",
+        "mirrors": [],
+        "hash": "sha256-7mmBt+uqD6YhgyS/FIHr6jaGG8Kc58dZ3sYr6rp60FI="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "renv",
+      "version": "1.3.1",
+      "cellarName": "renv_1.3.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "renv/renv_1.3.1.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/renv_1.3.1.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/renv/renv_1.3.1.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/renv/1.3.1/renv_1.3.1.tar.gz"],
+        "hash": "sha256-4WKBkI3fDtb49vitPyzEeIr23gTBqyI1F6ocyayzBzE="
+      },
+      "local": null,
+      "outside": null
+    }
+  ],
+  "inline": [],
+  "outputs": {}
+}

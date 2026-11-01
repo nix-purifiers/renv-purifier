@@ -1,0 +1,7 @@
+result
+result-*
+.Rproj.user
+.Rhistory
+tests/fixtures/*/renv/library/
+tests/fixtures/*/renv/local/
+tests/fixtures/*/renv/staging/

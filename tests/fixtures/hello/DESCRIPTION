@@ -1,0 +1,18 @@
+Package: hello
+Title: The renv-purifier Test Fixture
+Version: 1.0.0
+Authors@R: person("renv-purifier", "contributors", email = "noreply@example.com", role = c("aut", "cre"))
+Description: Greets someone with packages from every source renv locks:
+    CRAN, an archived CRAN version, a package that links a system library,
+    GitHub, a git repository, a URL, a local directory and Bioconductor.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    BiocGenerics,
+    glue,
+    hellohelper,
+    jsonlite,
+    praise,
+    prettyunits,
+    rematch,
+    xml2

@@ -1,0 +1,7 @@
+Package: hellohelper
+Title: A Local Package of the renv-purifier Fixture
+Version: 0.1.0
+Authors@R: person("renv-purifier", "contributors", email = "noreply@example.com", role = c("aut", "cre"))
+Description: Builds the greeting text, from a directory inside the project.
+License: MIT
+Encoding: UTF-8
