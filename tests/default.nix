@@ -57,8 +57,8 @@ let
   # link system libraries. Its renv.lock names Posit Package Manager and
   # records most packages as coming from a repository it does not list
   # (RSPM). At this commit cransays is a Quarto dashboard: its DESCRIPTION
-  # names a package whose R code was removed, so the check builds its
-  # environment, not its package. The purifier lockfile is kept outside the
+  # names a package whose R code was removed, so the checks build its
+  # library, without the package. The purifier lockfile is kept outside the
   # project.
   cransays = build {
     src = pkgs.fetchFromGitHub {
@@ -191,12 +191,12 @@ in
     touch $out
   '';
 
-  # The pinned real-world project: its environment loads every locked
+  # The pinned real-world project: R with its library loads every locked
   # package.
-  cransays = cransays.packages.env;
+  cransays = cransays.library;
   cransays-runs = runCommand "cransays-runs" { } ''
     export HOME=$TMPDIR
-    ${cransays.packages.env}/bin/Rscript -e '
+    R_LIBS_SITE=${cransays.library}/library ${R}/bin/Rscript -e '
       packages <- names(jsonlite::read_json(commandArgs(TRUE)[1])$Packages)
       for (package in packages)
         if (!requireNamespace(package, quietly = TRUE))

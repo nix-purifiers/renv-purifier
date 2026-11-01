@@ -210,7 +210,7 @@ commit:
   repository. It is the integration test in `tests/default.nix`, with its
   purifier lockfile kept outside the project. At this commit cransays is a
   Quarto dashboard whose `DESCRIPTION` names a package with no R code left,
-  so the check builds its environment and loads every package. It found
+  so the check builds its library and loads every package. It found
   three problems that renv-purifier fixes: openssl links with
   `-l:libssl.so.3`, which needs a runtime path the compiler wrapper does not
   add; the renv 1.2.3 it pins fails its own offline restore, so the builder
