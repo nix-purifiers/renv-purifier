@@ -5,7 +5,7 @@ Run every command from the repository root.
 - `nix flake check -L` builds the command, runs the unit tests of the lock
   run's record planning (`pkgs/renv-purifier/test-records.R`), builds the
   fixtures under `tests/fixtures` in the sandbox and runs them, builds the
-  environment of the pinned real-world project r-hub/cransays
+  library of the pinned real-world project r-hub/cransays
   (`tests/real/cransays`), runs the sandboxed conformance checks of the
   purifier contract (stale, tampered, missing, malformed, offline and
   external), and checks the formatting.
