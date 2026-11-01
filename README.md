@@ -1,46 +1,93 @@
 # renv-purifier
 
-A command and a Nix library that build R projects managed with
-[renv](https://rstudio.github.io/renv/) in the Nix sandbox. renv's own
-`renv.lock` names every package with its version and source. The command
-records, in a second lockfile, the hashes of the downloads and the URLs that
-`renv.lock` cannot give, and Nix builds the project from the two, offline.
-You commit the lockfile, and no generated Nix files.
+renv-purifier keeps renv's development workflow on locked,
+Nix-resolved dependencies. Use the normal build and test commands in your
+working tree; building the project itself in the Nix sandbox is an
+optional next step.
+
+It follows the [purifier contract](https://github.com/nix-purifiers/purifier/blob/main/CONTRACT.md).
 
 renv-purifier is one of the [nix-purifiers](https://nix-purifiers.github.io),
 and meets their contract
 ([CONTRACT.md](https://github.com/nix-purifiers/purifier/blob/main/CONTRACT.md)).
 
+## Installation
+
+Install the integration into your Nix profile once:
+
+```sh
+nix profile install 'github:nix-purifiers/renv-purifier'
+```
+
+This installs the purifier CLI. The workflow below prepares the native
+tool's cache, hook or environment; follow that activation step before using
+your usual commands. The ordinary tool itself remains your normal
+installation unless the setup explicitly supplies a toolchain.
+
+`nix shell` makes an integration available temporarily instead of installing
+it. Keep using the activation steps below where a project environment or
+prefetched cache is required.
+
 ## Quickstart
 
-Lock the project from its root, where `renv.lock` is, and commit both
-lockfiles to the project's repository. That is the recommended setup, and
-the builder and the commands look for the lockfiles there by default:
+Install Nix, then run the following from your existing project's root.
+The setup prepares the locked dependencies and the integration that
+renv's normal commands use:
 
 ```zsh
 nix run github:nix-purifiers/renv-purifier -- lock
+nix run github:nix-purifiers/renv-purifier -- prefetch
+.renv-purifier/prefetch/R/bin/R
 ```
 
-Then build the project from its directory, with no Nix file added to it:
+Commit the lockfiles that the lock command writes, including the build
+tool's own lockfile when it has one. Keep using the project's usual build,
+test and editor commands with this setup. Nix provides the locked
+dependencies; the development commands above run outside the Nix sandbox.
+No project Nix files are needed for this workflow.
 
-```zsh
-nix build --impure --expr '
-  let
-    purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
-    pkgs = import purifier.inputs.nixpkgs {
-      system = builtins.currentSystem;
-      overlays = [ purifier.overlays.default ];
-    };
-  in
-  (pkgs.renv-purifier.buildRenvProject { src = ./.; }).packages.env'
-```
+Start R in the project as above; renv activates the prepared project
+library. Continue with your usual R commands.
 
-This uses the purifier's pinned nixpkgs, matching the lock command above.
-To build with ambient `<nixpkgs>` from your Nix search path instead,
-replace `import purifier.inputs.nixpkgs` with `import <nixpkgs>`.
-Both forms need no Nix files in your project. The build tool and language
-versions must match the lockfile; with ambient nixpkgs, lock with the
-purifier from that package set or pass a compatible toolchain to the builder.
+Sandboxed builds of the whole project are an optional
+[next step](#building-the-project-with-nix).
+
+## Development loop
+
+The development loop is renv's own: R in the project, with `renv/activate.R`
+loading the project library, `library()` calls, `renv::status()` and
+`renv::snapshot()`. renv-purifier adds four commands, which take
+`--project <dir>`, the current directory by default:
+
+| Command | What it does |
+|---|---|
+| `renv-purifier lock` | Writes `renv-purifier.lock.json` for `renv.lock` as it is. A relock of an unchanged project writes the same file byte for byte. |
+| `renv-purifier update [<package>...]` | Updates the packages named, or every package, with `renv::update()`, records them in `renv.lock` with `renv::snapshot()`, and relocks. |
+| `renv-purifier prefetch` | Builds the locked library with Nix and installs it as the project library (below). |
+| `renv-purifier publish <repository>` | Adds the release Nix built to the CRAN-like repository directory `<repository>`, and rewrites its `PACKAGES` index. |
+
+`renv-purifier lock` needs a `renv.lock`. renv writes `renv.lock` from the
+packages installed in the project library, so for a project without one,
+`lock` stops and names `renv::init()` and `renv::snapshot()`. Run one of
+them in the project, then run `lock`.
+
+After `renv::install()` and `renv::snapshot()` change `renv.lock`, rerun
+`renv-purifier lock`. Until then, Nix and `prefetch` refuse the stale
+lockfile and name that command.
+
+A published repository directory works with `install.packages()` when it is
+served over HTTP or pushed to a host such as a drat repository on GitHub
+Pages. CRAN itself takes packages through a web form, followed by a
+confirmation email to the maintainer, so a CRAN submission cannot be
+automated. Submit the tarball from `release`.
+
+## Building the project with Nix
+
+Once the native development workflow is working, you can also build and
+test the whole project in the Nix sandbox. For this step, keep a flake or
+another Nix build definition in the project's repository, or maintain an
+external packaging repository that points at its sources and lockfiles.
+The builder consumes the same lockfiles as the development workflow.
 
 The result is `result/bin/R`, with every locked package, and the project's
 own package when the project is one, on its library path.
@@ -114,34 +161,29 @@ lockfile, `lock` and `update` write the renv.lock at that path and leave the
 copy in the project as it is. When the file at that path does not exist
 yet, they start from the renv.lock in the project.
 
-## Development loop
+### One-off builds without a project Nix file
 
-The development loop is renv's own: R in the project, with `renv/activate.R`
-loading the project library, `library()` calls, `renv::status()` and
-`renv::snapshot()`. renv-purifier adds four commands, which take
-`--project <dir>`, the current directory by default:
+For an ad hoc build, the builder can also be evaluated directly from the
+project root. Replace the example package name with one from your project:
 
-| Command | What it does |
-|---|---|
-| `renv-purifier lock` | Writes `renv-purifier.lock.json` for `renv.lock` as it is. A relock of an unchanged project writes the same file byte for byte. |
-| `renv-purifier update [<package>...]` | Updates the packages named, or every package, with `renv::update()`, records them in `renv.lock` with `renv::snapshot()`, and relocks. |
-| `renv-purifier prefetch` | Builds the locked library with Nix and installs it as the project library (below). |
-| `renv-purifier publish <repository>` | Adds the release Nix built to the CRAN-like repository directory `<repository>`, and rewrites its `PACKAGES` index. |
+```zsh
+nix build --impure --expr '
+  let
+    purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
+    pkgs = import purifier.inputs.nixpkgs {
+      system = builtins.currentSystem;
+      overlays = [ purifier.overlays.default ];
+    };
+  in
+  (pkgs.renv-purifier.buildRenvProject { src = ./.; }).packages.env'
+```
 
-`renv-purifier lock` needs a `renv.lock`. renv writes `renv.lock` from the
-packages installed in the project library, so for a project without one,
-`lock` stops and names `renv::init()` and `renv::snapshot()`. Run one of
-them in the project, then run `lock`.
-
-After `renv::install()` and `renv::snapshot()` change `renv.lock`, rerun
-`renv-purifier lock`. Until then, Nix and `prefetch` refuse the stale
-lockfile and name that command.
-
-A published repository directory works with `install.packages()` when it is
-served over HTTP or pushed to a host such as a drat repository on GitHub
-Pages. CRAN itself takes packages through a web form, followed by a
-confirmation email to the maintainer, so a CRAN submission cannot be
-automated. Submit the tarball from `release`.
+This uses the purifier's pinned nixpkgs, matching the lock command above.
+To build with ambient `<nixpkgs>` from your Nix search path instead,
+replace `import purifier.inputs.nixpkgs` with `import <nixpkgs>`.
+Both forms need no Nix files in your project. The build tool and language
+versions must match the lockfile; with ambient nixpkgs, lock with the
+purifier from that package set or pass a compatible toolchain to the builder.
 
 ## Working offline
 
@@ -242,6 +284,11 @@ dependencies does not: R and renv unpack each package into a randomly named
 temporary directory, and the help pages R installs record that path.
 
 ## Examples
+
+For day-to-day work on these projects, use the native-tool setup and
+commands in [Quickstart](#quickstart) and [Development loop](#development-loop).
+The Nix expressions below show optional sandboxed packaging of those
+projects.
 
 ### r-hub/cransays
 
