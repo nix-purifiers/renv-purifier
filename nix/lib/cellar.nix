@@ -22,7 +22,10 @@
 # need no entry, because renv installs them from the project itself.
 {
   lib,
-  pkgs,
+  runCommand,
+  gnutar,
+  gzip,
+  unzip,
   # The fetcher of download entries, from the shared purifier library,
   # with the builder's `fetchers` applied.
   fetch,
@@ -38,13 +41,6 @@
   rVersion,
 }:
 let
-  inherit (pkgs)
-    runCommand
-    gnutar
-    gzip
-    unzip
-    ;
-
   # Packs the tree under work/ into the cellar tarball `cellarName` of
   # `package`, keeping its top-level entries, with interpreter lines
   # patched.

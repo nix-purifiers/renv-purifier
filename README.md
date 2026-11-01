@@ -20,9 +20,18 @@ lockfile:
 nix run github:nix-purifiers/renv-purifier -- lock
 ```
 
-Build it with the library's builder:
+The flake's `overlays.default` adds the builder `buildRenvProject` to a
+package set, and a package written for `callPackage` takes it by name, like
+any other builder:
 
 ```nix
+# package.nix
+{ buildRenvProject }:
+(buildRenvProject { src = ./.; }).packages.env
+```
+
+```nix
+# flake.nix
 {
   inputs.renv-purifier.url = "github:nix-purifiers/renv-purifier";
   inputs.nixpkgs.follows = "renv-purifier/nixpkgs";
@@ -30,15 +39,16 @@ Build it with the library's builder:
   outputs = { nixpkgs, renv-purifier, ... }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      project = renv-purifier.lib.renv-purifier.buildRenvProject {
-        inherit pkgs;
-        src = ./.;
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [
+          renv-purifier.overlays.default
+          (final: prev: { analysis = final.callPackage ./package.nix { }; })
+        ];
       };
     in
     {
-      packages.${system}.default = project.packages.env;
-      checks.${system}.default = project.tests;
+      packages.${system}.default = pkgs.analysis;
     };
 }
 ```
@@ -66,10 +76,11 @@ Build it with the library's builder:
 the purifier lockfile into the lock shape every purifier shares: `entries`,
 `outputs` and `problems`.
 
-The arguments, documented in `nix/lib/build-renv-project.nix`, are
+The arguments, documented in `nix/lib/build-renv-project.nix`, are `src`,
 `lockFile`, `fetchers` (passed to the purifier library's `fetchEntry`, for
-credentials or a company mirror), `R`, `localPackages`, `extraBuildInputs`,
-`extraNativeBuildInputs` and `srcFilter`.
+credentials or a company mirror), `localPackages`, `extraBuildInputs`,
+`extraNativeBuildInputs` and `srcFilter`. `buildRenvProject.override`
+replaces what the builder takes from the package set, such as `R`.
 
 A packaging flake can build a project whose author does not use
 renv-purifier: it keeps the purifier lockfile itself and passes it as
@@ -77,9 +88,9 @@ renv-purifier: it keeps the purifier lockfile itself and passes it as
 take that lockfile through `--lockfile <path>` or the environment variable
 `RENV_PURIFIER_LOCKFILE`.
 
-## Everyday loop
+## Development loop
 
-The everyday loop is renv's own: R in the project, with `renv/activate.R`
+The development loop is renv's own: R in the project, with `renv/activate.R`
 loading the project library, `library()` calls, `renv::status()` and
 `renv::snapshot()`. renv-purifier adds four commands, which take
 `--project <dir>`, the current directory by default:
@@ -101,7 +112,7 @@ Pages. CRAN itself takes packages through a web form, followed by a
 confirmation email to the maintainer, so a CRAN submission cannot be
 automated. Submit the tarball from `release`.
 
-## Offline work
+## Working offline
 
 `renv-purifier prefetch` builds every locked package in the Nix sandbox and
 copies the result into the project library that `renv/activate.R` reads. It
@@ -122,10 +133,11 @@ R's language server is the R package languageserver, which editors such as
 VS Code, Emacs and Neovim start for completion and diagnostics. Add it to the
 project with renv like any other package. `prefetch` then installs it with
 the rest of the library: point the editor's R at
-`.renv-purifier/prefetch/R/bin/R`, or start it from `packages.env`. RStudio and Emacs Speaks Statistics run an ordinary R session,
-which works the same way.
+`.renv-purifier/prefetch/R/bin/R`, or start it from `packages.env`. RStudio
+and Emacs Speaks Statistics run an ordinary R session, which works the same
+way.
 
-## Errors and fixes
+## Troubleshooting
 
 Each common mistake stops `nix build` or the command with a message that
 names the fix:
@@ -140,9 +152,9 @@ names the fix:
 | a lockfile of another format version | `… has lock format version <n>, and this library reads version 2. Run renv-purifier lock …` |
 | `renv.lock` with merge conflict markers | `… renv.lock, which is not valid JSON; look for merge conflict markers, fix it, or run renv::snapshot() again` |
 | a package from outside the project that the build cannot reach | `renv.lock installs <package> from <path>, a directory outside the project; pass it as localPackages.<package>.` |
-| `renv.lock` made with another R minor release | a warning: the build goes ahead with the R it is given, and names the `R` argument and `renv-purifier update` for a package that fails to compile |
+| `renv.lock` made with another R minor release | The build goes ahead with the R of the package set and warns. For a package that fails to compile, the warning names `buildRenvProject.override` and `renv-purifier update`. |
 
-## Sources supported and refused
+## Supported language repositories
 
 renv installs a package from its *cellar* before it downloads anything. The
 cellar is a directory named by the environment variable
@@ -222,9 +234,11 @@ shell with R and that library.
   outputs = { nixpkgs, renv-purifier, cransays, ... }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      project = renv-purifier.lib.renv-purifier.buildRenvProject {
-        inherit pkgs;
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ renv-purifier.overlays.default ];
+      };
+      project = pkgs.buildRenvProject {
         src = cransays;
         lockFile = ./cransays.lock.json;
       };

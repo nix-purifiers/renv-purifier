@@ -31,17 +31,8 @@ let
   root = /. + src;
   lockArgs = lib.optionalAttrs (lockFile != null) { lockFile = /. + lockFile; };
   readLock = import ./read-lock.nix { inherit lib; };
-  buildRenvProject = import ./build-renv-project.nix {
-    inherit lib;
-    purifier = purifierLib;
-  };
-  built = buildRenvProject (
-    {
-      inherit pkgs;
-      src = root;
-    }
-    // lockArgs
-  );
+  buildRenvProject = pkgs.callPackage ./build-renv-project.nix { purifier = purifierLib; };
+  built = buildRenvProject ({ src = root; } // lockArgs);
 in
 {
   inherit (readLock ({ src = root; } // lockArgs)) problems;

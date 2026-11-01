@@ -1,9 +1,19 @@
 # SPDX-License-Identifier: MIT
 #
-# `lib.renv-purifier.buildRenvProject`: the sandboxed build of an R project
-# from its renv.lock and the renv-purifier.lock.json that
-# `renv-purifier lock` writes, as the purifier contract
-# (github:nix-purifiers/purifier, CONTRACT.md) describes.
+# buildRenvProject: the sandboxed build of an R project from its renv.lock
+# and the renv-purifier.lock.json that `renv-purifier lock` writes, as the
+# purifier contract (github:nix-purifiers/purifier, CONTRACT.md) describes.
+#
+# The file is a package for callPackage: the first argument set is what it
+# takes from the package set, and the result is the builder. The
+# renv-purifier overlay (`overlays.default`) adds it to the package set as
+# `buildRenvProject`, so a package written for callPackage takes it like
+# any other dependency:
+#
+#   { buildRenvProject }: (buildRenvProject { src = ./.; }).packages.env
+#
+# and `buildRenvProject.override` replaces what it takes from the set, such
+# as `R`.
 #
 # The builder fetches every locked package into an renv cellar
 # (cellar.nix), a directory renv reads source packages from before it
@@ -31,12 +41,27 @@
 #                       library from
 {
   lib,
+  stdenv,
+  makeWrapper,
+  pkg-config,
+  runCommand,
+  linkFarm,
+  gnutar,
+  gzip,
+  unzip,
+  fetchurl,
+  fetchgit,
+  # The R that installs and runs the packages.
+  R,
+  # nixpkgs' R packages: the renv that runs the restore, and the system
+  # libraries each locked package needs.
+  rPackages,
   # The shared library of the nix-purifiers (github:nix-purifiers/purifier),
-  # which checks the lock and fetches download entries.
+  # which checks the lock and fetches download entries. The overlay passes
+  # it.
   purifier,
 }:
 {
-  pkgs,
   # The project root, which holds renv.lock and, unless `lockFile` names
   # another path, renv-purifier.lock.json.
   src,
@@ -46,8 +71,6 @@
   # The fetchers of the shared library's fetchEntry, such as a `fetchurl`
   # that sends credentials or uses a company mirror.
   fetchers ? { },
-  # The R that installs and runs the packages.
-  R ? pkgs.R,
   # Packages whose renv.lock record names a directory outside the project,
   # by package name, each a path that holds the package. Without an entry
   # here, the builder looks for the package at the recorded path from
@@ -63,15 +86,6 @@
   srcFilter ? null,
 }:
 let
-  inherit (pkgs)
-    stdenv
-    makeWrapper
-    pkg-config
-    runCommand
-    linkFarm
-    rPackages
-    ;
-
   read = import ./lock.nix { inherit lib src lockFile; };
   lock = purifier.checkLock {
     purifier = "renv-purifier";
@@ -79,7 +93,7 @@ let
   };
   entries = purifier.entriesFor stdenv.hostPlatform.system lock;
 
-  fetch = purifier.fetchEntry ({ inherit pkgs; } // fetchers);
+  fetch = purifier.fetchEntry ({ inherit fetchurl fetchgit; } // fetchers);
 
   # A package from a directory outside the project is found at the path its
   # renv.lock record names, from the project root, when `src` is a path
@@ -104,7 +118,10 @@ let
   cellar = import ./cellar.nix {
     inherit
       lib
-      pkgs
+      runCommand
+      gnutar
+      gzip
+      unzip
       fetch
       entries
       outside
@@ -433,7 +450,7 @@ in
 # so a lock made with another R release builds as long as its packages
 # compile with this one. Old package versions sometimes do not.
 lib.warnIf (read.rVersion != null && majorMinor R.version != majorMinor read.rVersion)
-  "renv-purifier: renv.lock was made with R ${read.rVersion}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor read.rVersion} to buildRenvProject, or update the package with `renv-purifier update`."
+  "renv-purifier: renv.lock was made with R ${read.rVersion}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor read.rVersion} through buildRenvProject.override, or update the package with `renv-purifier update`."
   {
     packages = {
       inherit env;

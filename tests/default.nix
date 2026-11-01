@@ -11,16 +11,16 @@
   pkgs,
   # The renv-purifier command.
   cli,
-  # The flake's library: `renv-purifier`, with the builder, and `purifier`.
-  lib',
+  # The flake's default package overlay, which adds buildRenvProject.
+  overlay,
 }:
 let
   inherit (pkgs) lib runCommand;
   R = pkgs.R;
 
-  # Every fixture builds the way a consumer's flake does: through the
-  # library's builder, with a package set.
-  build = args: lib'.renv-purifier.buildRenvProject ({ inherit pkgs; } // args);
+  # Every fixture builds the way a consumer's package does: through
+  # buildRenvProject of a package set the overlay applies to.
+  build = (pkgs.extend overlay).buildRenvProject;
 
   # An R package whose dependencies come from every source a lock records:
   # CRAN (current and archived), packages that link libxml2 and openssl,
@@ -231,6 +231,20 @@ in
     conformance-missing
     conformance-malformed
     ;
+
+  # buildRenvProject.override replaces what the builder takes from the
+  # package set: an R built with other options gives another library.
+  builder-override =
+    let
+      otherR = R.overrideAttrs (old: {
+        env = (old.env or { }) // {
+          RENV_PURIFIER_TEST_OVERRIDE = "1";
+        };
+      });
+      overridden = (build.override { R = otherR; }) { src = ./fixtures/hello; };
+    in
+    assert overridden.library.drvPath != hello.library.drvPath;
+    runCommand "builder-override" { } "touch $out";
 
   # Builds of the hello fixture that the conformance-rebuild job of CI
   # builds twice with `nix build --rebuild`: its release and its package.
