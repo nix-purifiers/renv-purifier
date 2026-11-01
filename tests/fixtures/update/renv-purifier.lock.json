@@ -1,0 +1,15 @@
+{
+  "contentHash": "eccc0573329546630faffaaf3eb9ebbc86cf65ef89d6389fbc78ff000bd79731",
+  "packages": {
+    "glue": {
+      "hash": "sha256-naUY8SvlhMkOdf6OB/cR7j9vwNA9gX9ywl3A9mSZ/b8=",
+      "url": "https://cloud.r-project.org/src/contrib/Archive/glue/glue_1.6.2.tar.gz"
+    },
+    "renv": {
+      "hash": "sha256-4WKBkI3fDtb49vitPyzEeIr23gTBqyI1F6ocyayzBzE=",
+      "url": "https://cloud.r-project.org/src/contrib/renv_1.3.1.tar.gz"
+    }
+  },
+  "renvLock": "f777775255fdcbe58795fe678cd5d0b2f97592cec6849037aa59808613acad0e",
+  "version": 2
+}

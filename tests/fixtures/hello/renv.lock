@@ -78,6 +78,18 @@
       "Repository": "CRAN",
       "Type": "source"
     },
+    "BiocVersion": {
+      "Package": "BiocVersion",
+      "Version": "3.23.1",
+      "Source": "Bioconductor",
+      "Depends": [
+        "R (>= 4.6.0)"
+      ],
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no",
+      "Repository": "BioCsoft",
+      "Type": "source"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.1",

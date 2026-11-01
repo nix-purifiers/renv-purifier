@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: MIT
 #
 # The renv-purifier command: `renv-purifier lock` writes a project's
-# renv-purifier.lock.json, `restore` installs the project library offline
-# from the locked downloads, `build` builds the project with Nix, and
+# renv-purifier.lock.json, `update` updates packages and relocks,
+# `prefetch` installs the project library from the library Nix builds, and
 # `publish` adds the project's package to a CRAN-like repository. It calls
-# the nix-build and nix-hash of the Nix installation it runs on.
+# the nix-build, nix-shell, nix-instantiate and nix-hash of the Nix
+# installation it runs on.
 {
   path,
   writeShellApplication,
@@ -39,7 +40,7 @@ writeShellApplication {
   ];
   runtimeEnv = {
     RENV_PURIFIER_LIB = ../../nix/lib;
-    # lock.R and the urls.R it reads, from this directory.
+    # lock.R and the records.R it reads, from this directory.
     RENV_PURIFIER_SCRIPTS = ./.;
     RENV_PURIFIER_NIXPKGS = path;
     RENV_PURIFIER_LIBRARY = purifier;

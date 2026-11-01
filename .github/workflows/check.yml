@@ -1,10 +1,20 @@
 # SPDX-License-Identifier: MIT
 #
-# Runs on x86_64-linux and aarch64-linux: the flake's checks (the CLI
-# build, the URL unit test, the sandboxed builds of the fixtures under
-# tests/fixtures and a run of each, and the formatting), then tests/cli.sh
-# for what runs outside the sandbox (the lock run, `build`, an offline
-# `restore` and `publish`).
+# Runs on x86_64-linux and aarch64-linux. The check job builds the flake's
+# checks, the sandboxed builds of the fixtures, the real-world project and
+# the conformance checks the sandbox can run among them, then runs
+# tests/cli.sh for what runs outside the sandbox: the lock run, `prefetch`
+# with every request refused, an external lockfile and `publish`. Three
+# checks of the purifier contract need what the Nix sandbox does not have,
+# so they are jobs here:
+# - conformance-relock relocks every fixture with the network and fails
+#   when a lockfile differs from the committed one.
+# - conformance-rebuild builds the release and the package of the hello
+#   fixture again with `nix build --rebuild`, which fails when the second
+#   build differs.
+# - conformance-update runs `renv-purifier update` on a fixture that pins
+#   an old version, with the network, and checks that both lockfiles then
+#   pass the stale check.
 name: check
 
 on:
@@ -28,3 +38,41 @@ jobs:
       - uses: cachix/install-nix-action@v31
       - run: nix flake check -L
       - run: tests/cli.sh
+
+  conformance-relock:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - run: tests/relock-fixtures.sh
+      - run: git diff --exit-code
+
+  conformance-rebuild:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - run: |
+          system=$(nix eval --raw --impure --expr builtins.currentSystem)
+          checks=(".#checks.$system.rebuild-release" ".#checks.$system.rebuild-package")
+          nix build -L "${checks[@]}"
+          nix build -L --rebuild "${checks[@]}"
+
+  conformance-update:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - run: tests/conformance-update.sh

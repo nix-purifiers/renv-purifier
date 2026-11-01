@@ -1,125 +1,117 @@
 # SPDX-License-Identifier: MIT
 #
-# buildRenvProject: the sandboxed build of an R project, from its renv.lock
-# and the renv-purifier.lock.json that `renv-purifier lock` writes beside
-# it.
+# `lib.renv-purifier.buildRenvProject`: the sandboxed build of an R project
+# from its renv.lock and the renv-purifier.lock.json that
+# `renv-purifier lock` writes, as the purifier contract
+# (github:nix-purifiers/purifier, CONTRACT.md) describes.
 #
-# The file is a package for callPackage: the first argument set is what it
-# takes from the package set, and the result is the builder. The
-# renv-purifier overlay (`overlays.default`) adds it to the package set as
-# `buildRenvProject`, so a package written for callPackage takes it like any
-# other dependency:
+# The builder fetches every locked package into an renv cellar
+# (cellar.nix), a directory renv reads source packages from before it
+# downloads anything, and runs renv's own renv::restore() from it with no
+# network. The result has:
 #
-#   { buildRenvProject }: (buildRenvProject { src = ./.; }).env
-#
-# and `buildRenvProject.override` replaces what it takes from the set, such
-# as `R`. The builder returns
-#
-#   cellar           the source tarball of every locked package, in the
-#                    layout of an renv cellar (cellar.nix)
-#   library          every locked package, installed by renv::restore() from
-#                    the cellar, in library/
-#   env              R and Rscript in bin/, with the library (and the
-#                    project's own package, when the project is one) on
-#                    their library path
-#   package          for a project that is an R package: the source tarball
-#                    R CMD build makes, and the package installed in
-#                    library/
-#   packages.<name>  the same package, under its name
-#   lock             the purifier lockfile, as lock.nix reads it
+#   packages.env        R and Rscript in bin/, with the library, and the
+#                       project's own package when the project is one, on
+#                       their library path
+#   packages.<package>  for a project that is an R package: the package,
+#                       installed in library/
+#   tests               for a package, R CMD check of its release; for a
+#                       project that is not a package, a load of every
+#                       locked package
+#   release             for a package, the source tarball that
+#                       `renv-purifier publish` adds to a repository, by
+#                       file name in `.artifacts`; null otherwise
+#   fetches             the download entries of the purifier library that
+#                       the build fetches
+#   library             every locked package, installed by renv::restore()
+#                       in library/
+#   cellar              the source tarball of every locked package, in the
+#                       layout of an renv cellar
+#   interactive         what `renv-purifier prefetch` installs the project
+#                       library from
 {
   lib,
-  stdenv,
-  callPackage,
-  makeWrapper,
-  pkg-config,
-  R,
-  # nixpkgs' R packages, read only for the system libraries each package
-  # needs.
-  rPackages,
-  # The fetcher of download entries, from the shared purifier library
-  # (github:nix-purifiers/purifier).
-  fetchEntry,
+  # The shared library of the nix-purifiers (github:nix-purifiers/purifier),
+  # which checks the lock and fetches download entries.
+  purifier,
 }:
 {
-  # The project root, which holds renv.lock.
+  pkgs,
+  # The project root, which holds renv.lock and, unless `lockFile` names
+  # another path, renv-purifier.lock.json.
   src,
-  # The purifier lockfile. The default is the one `renv-purifier lock` writes
-  # at the project root.
+  # The purifier lockfile. A file outside `src` replaces any copy in it,
+  # so a packaging flake can build a project its author does not change.
   lockFile ? src + "/renv-purifier.lock.json",
+  # The fetchers of the shared library's fetchEntry, such as a `fetchurl`
+  # that sends credentials or uses a company mirror.
+  fetchers ? { },
+  # The R that installs and runs the packages.
+  R ? pkgs.R,
   # Packages whose renv.lock record names a directory outside the project,
-  # by package name.
+  # by package name, each a path that holds the package. Without an entry
+  # here, the builder looks for the package at the recorded path from
+  # `src`.
   localPackages ? { },
   # More libraries and tools for compiling packages, beside the ones the
   # builder takes from nixpkgs' R packages.
   extraBuildInputs ? [ ],
   extraNativeBuildInputs ? [ ],
-  # Runs R CMD check on the project's package.
-  doCheck ? false,
-  # Replaces nixpkgs' fetchurl for the file downloads, as the place for
-  # credentials or mirrors. It takes the arguments of nixpkgs' fetchurl.
-  fetchurl ? null,
   # Filters the project root before it is copied into the store, as the
   # `filter` of builtins.path. The default leaves out renv's project library
   # and the project's build outputs.
   srcFilter ? null,
 }:
 let
-  lock = import ./lock.nix { inherit lockFile; };
+  inherit (pkgs)
+    stdenv
+    makeWrapper
+    pkg-config
+    runCommand
+    linkFarm
+    rPackages
+    ;
+
+  read = import ./lock.nix { inherit lib src lockFile; };
+  lock = purifier.checkLock {
+    purifier = "renv-purifier";
+    inherit (read) entries outputs problems;
+  };
+  entries = purifier.entriesFor stdenv.hostPlatform.system lock;
+
+  fetch = purifier.fetchEntry ({ inherit pkgs; } // fetchers);
 
   # A package from a directory outside the project is found at the path its
   # renv.lock record names, from the project root, when `src` is a path
   # that reaches it. `localPackages` replaces any of them.
-  outsidePackages = lib.listToAttrs (
-    lib.concatMap (
-      package:
-      let
-        path =
-          if lib.hasPrefix "/" package.outside then /. + package.outside else src + "/${package.outside}";
-      in
-      lib.optional (package.convert == "external" && builtins.pathExists path) {
-        inherit (package) name;
-        value = path;
-      }
-    ) lock.packages
-  );
+  outside = lib.mapAttrs (
+    name: path:
+    let
+      found = if lib.hasPrefix "/" path then /. + path else src + "/${path}";
+    in
+    {
+      version = read.records.${name}.Version;
+      path =
+        localPackages.${name} or (
+          if builtins.pathExists found then
+            found
+          else
+            throw "renv-purifier: renv.lock installs ${name} from ${path}, a directory outside the project; pass it as `localPackages.${name}`."
+        );
+    }
+  ) read.outside;
 
-  cellar = callPackage ./cellar.nix { inherit fetchEntry; } {
-    inherit lockFile fetchurl;
+  cellar = import ./cellar.nix {
+    inherit
+      lib
+      pkgs
+      fetch
+      entries
+      outside
+      ;
+    inherit (read) bioconductor;
     rVersion = R.version;
-    localPackages = outsidePackages // localPackages;
   };
-
-  # The lock records a hash of renv.lock. A renv.lock changed after locking
-  # would name packages the cellar does not hold, so the build stops before
-  # it starts.
-  renvLockHash = builtins.hashFile "sha256" (src + "/renv.lock");
-
-  # Every package renv.lock names needs an entry in the purifier lock. The
-  # packages of priority "base" ship with R, and the lock run skips them.
-  basePackages = [
-    "base"
-    "compiler"
-    "datasets"
-    "graphics"
-    "grDevices"
-    "grid"
-    "methods"
-    "parallel"
-    "splines"
-    "stats"
-    "stats4"
-    "tcltk"
-    "tools"
-    "utils"
-  ];
-  renvLockPackages =
-    builtins.attrNames
-      (builtins.fromJSON (builtins.readFile (src + "/renv.lock"))).Packages;
-  lockedNames = map (package: package.name) lock.packages;
-  missingPackages = lib.filter (
-    name: !(lib.elem name lockedNames || lib.elem name basePackages)
-  ) renvLockPackages;
 
   defaultSrcFilter =
     path: type:
@@ -134,6 +126,7 @@ let
         "renv/cellar"
         "renv/local"
         "renv/sandbox"
+        ".renv-purifier"
       ]
       || name == ".git"
       || name == ".Rproj.user"
@@ -161,11 +154,11 @@ let
     attribute:
     lib.unique (
       lib.concatMap (
-        package:
+        name:
         lib.filter (drv: lib.isDerivation drv && !isRPackage drv) (
-          (rPackages.${package.name} or { }).${attribute} or [ ]
+          (rPackages.${name} or { }).${attribute} or [ ]
         )
-      ) lock.packages
+      ) (lib.attrNames read.records)
     );
 
   # The libraries to link against, each with the output that holds its
@@ -177,17 +170,17 @@ let
     in
     lib.unique (inputs ++ map libraryOutput inputs);
 
+  nativeInputs = systemInputs "nativeBuildInputs" ++ extraNativeBuildInputs;
+
   # A runtime path to the library directory of every system input, the ones
   # nixpkgs lists as native inputs included: nixpkgs lists openssl among
   # the native inputs of its R package openssl. A package's configure script
-  # often links with the flags pkg-config gives, such as openssl's
-  # `-l:libssl.so.3`, for which the compiler wrapper records no runtime path,
-  # and the shared object then does not load. The fixup phase drops the
-  # paths a package does not use.
+  # often links with the flags pkg-config gives, such as `-l:libssl.so.3`
+  # for openssl, for which the compiler wrapper records no runtime path, and
+  # the shared object then does not load. The fixup phase drops the paths a
+  # package does not use.
   runtimePaths = toString (
-    map (drv: "-rpath ${libraryOutput drv}/lib") (
-      lib.unique (linkedInputs ++ systemInputs "nativeBuildInputs" ++ extraNativeBuildInputs)
-    )
+    map (drv: "-rpath ${libraryOutput drv}/lib") (lib.unique (linkedInputs ++ nativeInputs))
   );
 
   majorMinor = version: lib.versions.majorMinor version;
@@ -215,7 +208,7 @@ let
     # compiled in, so the library would differ from build to build.
     export RENV_CONFIG_INSTALL_KEEP_SOURCE=FALSE
     export RENV_PURIFIER_INSTALL_OPTS=${lib.escapeShellArg installFlags}
-    ${lib.optionalString (lock.bioconductor != null) ''
+    ${lib.optionalString (read.bioconductor != null) ''
       export BIOCONDUCTOR_CONFIG_FILE="${cellar}/bioconductor/config.yaml"
     ''}
     mkdir -p "$HOME"
@@ -228,11 +221,14 @@ let
       R
       pkg-config
     ]
-    ++ systemInputs "nativeBuildInputs"
-    ++ extraNativeBuildInputs;
+    ++ nativeInputs;
     buildInputs = linkedInputs;
     env.NIX_LDFLAGS = runtimePaths;
     dontConfigure = true;
+    # renv::restore() runs with the renv of nixpkgs, whatever renv version
+    # the lock records: older renv releases fail their own offline restore.
+    # The renv record of the lock installs into the library from the cellar
+    # like any other package.
     buildPhase = ''
       runHook preBuild
       ${restoreEnvironment}
@@ -251,78 +247,101 @@ let
     '';
     dontInstall = true;
     inherit stripDebugList;
-    passthru = { inherit cellar lock runtimePaths; };
+    passthru = { inherit cellar runtimePaths; };
   };
 
-  outputPackage = lock.outputs.package or null;
+  # The project's own package, when the project is one.
+  outputName = lib.findFirst (_: true) null (lib.attrNames lock.outputs);
+  output = if outputName == null then null else lock.outputs.${outputName} // { name = outputName; };
 
-  package = stdenv.mkDerivation (finalAttrs: {
-    pname = outputPackage.name;
-    inherit (outputPackage) version;
-    src = filteredSrc;
-    nativeBuildInputs = [
-      R
-      pkg-config
-    ]
-    ++ systemInputs "nativeBuildInputs"
-    ++ extraNativeBuildInputs;
-    buildInputs = linkedInputs;
-    env.NIX_LDFLAGS = runtimePaths;
-    dontConfigure = true;
-    inherit doCheck;
-    buildPhase = ''
-      runHook preBuild
-      export HOME="$TMPDIR/home"
-      mkdir -p "$HOME"
-      export R_LIBS_SITE="${library}/library"
-      R CMD build --no-build-vignettes --no-manual .
-      if [ ! -f ${outputPackage.tarball} ]; then
-        echo "renv-purifier: the lock names ${outputPackage.tarball}, which R CMD build did not produce; run renv-purifier lock" >&2
-        exit 1
-      fi
-      # R CMD build writes the build time into the Packaged field and the
-      # tarball, so the release is repacked with fixed times and owners.
-      mkdir "$TMPDIR/release"
-      tar -xzf ${outputPackage.tarball} -C "$TMPDIR/release"
-      sed -i 's/^Packaged: .*/Packaged: 1970-01-01 00:00:00 UTC; nixbld/' \
-        "$TMPDIR/release/${outputPackage.name}/DESCRIPTION"
-      tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
-        -C "$TMPDIR/release" -cf - ${outputPackage.name} | gzip -n > ${outputPackage.tarball}
-      runHook postBuild
-    '';
-    checkPhase = ''
-      runHook preCheck
-      # glibc provides C.UTF-8 without a locale archive, and R CMD check
-      # wants a UTF-8 locale.
-      export LC_ALL=C.UTF-8
-      _R_CHECK_FORCE_SUGGESTS_=false R CMD check --no-manual --no-build-vignettes --ignore-vignettes ${outputPackage.tarball}
-      runHook postCheck
-    '';
-    installPhase = ''
-      runHook preInstall
-      mkdir -p "$out/library"
-      cp ${outputPackage.tarball} "$out/"
-      # R CMD INSTALL unpacks a tarball into a randomly named directory,
-      # which the help pages record, so the package installs from a fixed
-      # one.
-      mkdir -p "$TMPDIR/unpacked"
-      tar -xzf ${outputPackage.tarball} -C "$TMPDIR/unpacked"
-      R CMD INSTALL ${installFlags} --library="$out/library" "$TMPDIR/unpacked/${outputPackage.name}"
-      runHook postInstall
-    '';
-    inherit stripDebugList;
-    passthru = {
-      inherit library cellar lock;
-      # The files of the package by file name, such as
-      # artifacts."hello_1.0.0.tar.gz". They are known from the lock alone,
-      # before the package is built.
-      artifacts.${outputPackage.tarball} = "${finalAttrs.finalPackage}/${outputPackage.tarball}";
-    };
-    meta.description = "${outputPackage.name} ${outputPackage.version}, built by renv-purifier";
-  });
+  release =
+    if output == null then
+      null
+    else
+      stdenv.mkDerivation (finalAttrs: {
+        pname = "${output.name}-release";
+        inherit (output) version;
+        src = filteredSrc;
+        nativeBuildInputs = [
+          R
+          pkg-config
+        ]
+        ++ nativeInputs;
+        buildInputs = linkedInputs;
+        dontConfigure = true;
+        buildPhase = ''
+          runHook preBuild
+          export HOME="$TMPDIR/home"
+          mkdir -p "$HOME"
+          export R_LIBS_SITE="${library}/library"
+          R CMD build --no-build-vignettes --no-manual .
+          if [ ! -f ${output.tarball} ]; then
+            echo "renv-purifier: R CMD build did not produce ${output.tarball}, which DESCRIPTION names" >&2
+            exit 1
+          fi
+          # R CMD build writes the build time into the Packaged field and the
+          # tarball, so the release is repacked with fixed times and owners.
+          mkdir "$TMPDIR/release"
+          tar -xzf ${output.tarball} -C "$TMPDIR/release"
+          sed -i 's/^Packaged: .*/Packaged: 1970-01-01 00:00:00 UTC; nixbld/' \
+            "$TMPDIR/release/${output.name}/DESCRIPTION"
+          tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
+            -C "$TMPDIR/release" -cf - ${output.name} | gzip -n > ${output.tarball}
+          runHook postBuild
+        '';
+        installPhase = ''
+          runHook preInstall
+          mkdir -p "$out"
+          cp ${output.tarball} "$out/"
+          runHook postInstall
+        '';
+        passthru = {
+          # The files of the release by file name, such as
+          # artifacts."hello_1.0.0.tar.gz". They are known at evaluation,
+          # before the release is built.
+          artifacts.${output.tarball} = "${finalAttrs.finalPackage}/${output.tarball}";
+        };
+      });
+
+  package =
+    if output == null then
+      null
+    else
+      stdenv.mkDerivation {
+        pname = output.name;
+        inherit (output) version;
+        src = release;
+        nativeBuildInputs = [
+          R
+          pkg-config
+        ]
+        ++ nativeInputs;
+        buildInputs = linkedInputs;
+        env.NIX_LDFLAGS = runtimePaths;
+        # R CMD INSTALL unpacks a tarball into a randomly named directory,
+        # which the help pages record, so the package installs from a fixed
+        # one.
+        unpackPhase = ''
+          mkdir -p "$TMPDIR/unpacked"
+          tar -xzf $src/${output.tarball} -C "$TMPDIR/unpacked"
+        '';
+        dontConfigure = true;
+        dontBuild = true;
+        installPhase = ''
+          runHook preInstall
+          export HOME="$TMPDIR/home"
+          mkdir -p "$HOME" "$out/library"
+          export R_LIBS_SITE="${library}/library"
+          R CMD INSTALL ${installFlags} --library="$out/library" "$TMPDIR/unpacked/${output.name}"
+          runHook postInstall
+        '';
+        inherit stripDebugList;
+        passthru = { inherit library release; };
+        meta.description = "${output.name} ${output.version}, built by renv-purifier";
+      };
 
   libraryPath = lib.concatStringsSep ":" (
-    lib.optional (outputPackage != null) "${package}/library" ++ [ "${library}/library" ]
+    lib.optional (package != null) "${package}/library" ++ [ "${library}/library" ]
   );
 
   env = stdenv.mkDerivation {
@@ -337,30 +356,95 @@ let
           --set RENV_CONFIG_AUTOLOADER_ENABLED FALSE
       done
     '';
-    passthru = { inherit library lock; };
+    passthru = { inherit library; };
     meta.mainProgram = "Rscript";
   };
+
+  tests =
+    if release != null then
+      stdenv.mkDerivation {
+        name = "${output.name}-check";
+        src = release;
+        nativeBuildInputs = [
+          R
+          pkg-config
+        ]
+        ++ nativeInputs;
+        buildInputs = linkedInputs;
+        env.NIX_LDFLAGS = runtimePaths;
+        dontUnpack = true;
+        buildPhase = ''
+          export HOME="$TMPDIR/home"
+          mkdir -p "$HOME"
+          export R_LIBS_SITE="${library}/library"
+          # glibc provides C.UTF-8 without a locale archive, and R CMD check
+          # wants a UTF-8 locale.
+          export LC_ALL=C.UTF-8
+          _R_CHECK_FORCE_SUGGESTS_=false R CMD check --no-manual --no-build-vignettes \
+            --ignore-vignettes $src/${output.tarball}
+        '';
+        installPhase = "touch $out";
+      }
+    else
+      runCommand "renv-project-check" { } ''
+        export HOME="$TMPDIR"
+        ${env}/bin/Rscript -e '
+          for (package in commandArgs(TRUE))
+            if (!requireNamespace(package, quietly = TRUE))
+              stop("renv-purifier: the locked package ", package, " does not load")
+        ' ${lib.escapeShellArgs (lib.attrNames read.records)}
+        touch $out
+      '';
+
+  # The R a developer starts in the project after `renv-purifier prefetch`.
+  # It is the R the library was built with, and it points BiocManager at the
+  # Bioconductor configuration of the cellar, which renv reads when it loads
+  # a project with Bioconductor packages, and renv at the cellar, so that
+  # renv::restore() reinstalls a locked package with no network.
+  interactiveR = stdenv.mkDerivation {
+    name = "renv-interactive-R";
+    nativeBuildInputs = [ makeWrapper ];
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p "$out/bin"
+      for program in R Rscript; do
+        makeWrapper ${R}/bin/$program "$out/bin/$program" \
+          --set-default RENV_PATHS_CELLAR ${cellar}/cellar ${
+            lib.optionalString (
+              read.bioconductor != null
+            ) "\\
+          --set-default BIOCONDUCTOR_CONFIG_FILE ${cellar}/bioconductor/config.yaml"
+          }
+      done
+    '';
+  };
+
+  # What `renv-purifier prefetch` reads: the library it copies into the
+  # project's renv library, the R to start in the project, the renv that
+  # finds the path of that renv library, and the cellar.
+  interactive = linkFarm "renv-interactive" {
+    library = "${library}/library";
+    R = interactiveR;
+    renv = "${rPackages.renv}/library";
+    cellar = "${cellar}/cellar";
+  };
 in
-assert
-  renvLockHash == lock.renvLock
-  || throw "renv-purifier: renv.lock in ${toString src} changed after ${toString lockFile} was made; run `renv-purifier lock`.";
-assert
-  missingPackages == [ ]
-  || throw "renv-purifier: renv.lock names ${lib.concatStringsSep ", " missingPackages}, which ${toString lockFile} has no entry for; run `renv-purifier lock`.";
-# renv-purifier builds every package from source with the R of the package
-# set, so a lock made with another R release builds as long as its packages
+# renv-purifier builds every package from source with the R it is given,
+# so a lock made with another R release builds as long as its packages
 # compile with this one. Old package versions sometimes do not.
-lib.warnIf (majorMinor R.version != majorMinor lock.r)
-  "renv-purifier: renv.lock was made with R ${lock.r}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor lock.r} through buildRenvProject.override, or update the package with renv."
+lib.warnIf (read.rVersion != null && majorMinor R.version != majorMinor read.rVersion)
+  "renv-purifier: renv.lock was made with R ${read.rVersion}, and the packages build with R ${R.version}. If a package fails to compile, pass an `R` of version ${majorMinor read.rVersion} to buildRenvProject, or update the package with `renv-purifier update`."
   {
+    packages = {
+      inherit env;
+    }
+    // lib.optionalAttrs (package != null) { ${output.name} = package; };
     inherit
-      lock
-      cellar
+      tests
+      release
       library
-      env
+      cellar
+      interactive
       ;
+    fetches = lock.entries;
   }
-// lib.optionalAttrs (outputPackage != null) {
-  inherit package;
-  packages.${outputPackage.name} = package;
-}

@@ -5,14 +5,15 @@
 # it, and writes renv-purifier.lock.json. It installs nothing: every package
 # is built later, in the Nix sandbox.
 #
-# Usage: Rscript lock.R <project directory> <lock format version>
+# Usage: Rscript lock.R <project directory> <lockfile> <lock format version>
 
 script <- sub("^--file=", "", grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE))
 source(file.path(dirname(normalizePath(script)), "records.R"))
 
 args <- commandArgs(trailingOnly = TRUE)
 project <- normalizePath(args[[1]], mustWork = TRUE)
-formatVersion <- as.integer(args[[2]])
+lockPath <- args[[2]]
+formatVersion <- as.integer(args[[3]])
 
 fail <- function(...) {
   message("renv-purifier: ", sprintf(...))
@@ -95,14 +96,22 @@ entryFor <- function(fetch) {
   if (is.null(fetch)) NULL else if (fetch$kind == "git") gitEntry(fetch) else fileEntry(fetch)
 }
 
+# What the lockfile records for one package: the hash of its download,
+# which renv.lock cannot give, and, for a package from a repository, the URL
+# the download came from, which depends on where the package was found. Nix
+# derives every other download location from renv.lock (nix/lib/lock.nix).
+# A package from a directory has no download and no entry.
 lockPackage <- function(record) {
   plan <- tryCatch(planRecord(record, context), error = function(error) fail("%s", conditionMessage(error)))
+  if (is.null(plan$fetch))
+    return(NULL)
   entry <- entryFor(plan$fetch)
+  fallback <- FALSE
   if (is.null(entry) && !is.null(plan$fallback)) {
     entry <- entryFor(plan$fallback)
-    plan$convert <- "git"
+    fallback <- !is.null(entry)
   }
-  if (!is.null(plan$fetch) && is.null(entry)) {
+  if (is.null(entry)) {
     # `[[` matches names exactly; `$url` would also match `urls`.
     tried <- if (plan$fetch[["kind"]] == "git") plan$fetch[["url"]] else plan$fetch[["urls"]]
     fail(
@@ -111,50 +120,46 @@ lockPackage <- function(record) {
     )
   }
   message(sprintf("- %s %s (%s)", plan$name, plan$version, record$Source))
-  list(
-    name = plan$name,
-    version = plan$version,
-    cellarName = plan$cellarName,
-    convert = plan$convert,
-    download = entry,
-    local = plan$local,
-    outside = plan$outside
-  )
+  source <- tolower(record$Source %||% "")
+  if (fallback)
+    list(fallback = "git", hash = entry$hash)
+  else if (source %in% c("repository", "cran", "bioconductor"))
+    list(hash = entry$hash, url = entry$url)
+  else
+    list(hash = entry$hash)
 }
 
 records <- renvLock$Packages
-records <- records[setdiff(sort(names(records)), basePackages)]
-packages <- unname(lapply(records, lockPackage))
-
-# The project's own package, when the project is one.
-outputs <- list()
-description <- file.path(project, "DESCRIPTION")
-if (file.exists(description)) {
-  fields <- read.dcf(description, fields = c("Package", "Version"))
-  if (!is.na(fields[1, "Package"]) && !is.na(fields[1, "Version"])) {
-    outputs$package <- list(
-      name = fields[1, "Package"],
-      version = fields[1, "Version"],
-      tarball = sprintf("%s_%s.tar.gz", fields[1, "Package"], fields[1, "Version"])
-    )
-  }
+# The radix method sorts in byte order whatever the locale, so the lockfile
+# is the same on every machine.
+names <- setdiff(sort(names(records), method = "radix"), basePackages)
+packages <- setNames(list(), character())
+for (name in names) {
+  entry <- lockPackage(records[[name]])
+  if (!is.null(entry))
+    packages[[name]] <- entry
 }
 
 lock <- list(
-  version = formatVersion,
-  renvLock = nixHash(renvLockPath, sri = FALSE),
-  r = renvLock$R$Version,
-  bioconductor = biocVersion,
   packages = packages,
-  inline = I(list()),
-  outputs = if (length(outputs)) outputs else setNames(list(), character())
+  renvLock = nixHash(renvLockPath, sri = FALSE),
+  version = formatVersion
 )
 
-jsonlite::write_json(
-  lock,
-  file.path(project, "renv-purifier.lock.json"),
-  auto_unbox = TRUE,
-  pretty = TRUE,
-  null = "null"
+# The hash of the lockfile's own content: the SHA-256 of the JSON that Nix's
+# builtins.toJSON writes for every field but contentHash. Nix computes it,
+# so the hash is the one the Nix library checks.
+unhashed <- file.path(workdir, "unhashed.json")
+jsonlite::write_json(lock, unhashed, auto_unbox = TRUE)
+expression <- sprintf(
+  'builtins.hashString "sha256" (builtins.toJSON (builtins.fromJSON (builtins.readFile %s)))',
+  unhashed
 )
-message(sprintf("renv-purifier: wrote %s", file.path(project, "renv-purifier.lock.json")))
+contentHash <- system2("nix-instantiate", c("--eval", "--expr", shQuote(expression)), stdout = TRUE)
+contentHash <- gsub('"', "", contentHash[length(contentHash)])
+if (!grepl("^[0-9a-f]{64}$", contentHash))
+  fail("nix-instantiate could not hash the lockfile")
+
+lock <- c(list(contentHash = contentHash), lock)
+jsonlite::write_json(lock, lockPath, auto_unbox = TRUE, pretty = TRUE)
+message(sprintf("renv-purifier: wrote %s", lockPath))
