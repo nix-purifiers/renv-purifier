@@ -55,7 +55,7 @@ copy_hello() {
 }
 
 echo "== lock run reproduces the lockfiles"
-for fixture in hello sources editor; do
+for fixture in hello sources editor old-renv; do
   start=$(date +%s)
   "$cli" lock "$work/$fixture"
   echo "relocked $fixture in $(($(date +%s) - start))s"

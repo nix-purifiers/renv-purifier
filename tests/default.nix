@@ -30,6 +30,10 @@ let
   # the path renv.lock records.
   sources = buildRenvProject { src = ./fixtures/sources; };
 
+  # A lock that pins renv 1.2.3. The build restores it with the renv of
+  # nixpkgs, whatever renv version the lock records.
+  oldRenv = buildRenvProject { src = ./fixtures/old-renv; };
+
   # A project whose renv.lock holds the R language server, languageserver,
   # and its dependencies, which editors start for completion and diagnostics.
   editor = buildRenvProject { src = ./fixtures/editor; };
@@ -125,6 +129,17 @@ in
     ${sources.env}/bin/Rscript ${./fixtures/sources/greet.R} > output
     grep -qx 'Hi, you' output
     grep -qx 'TRUE' output
+    touch $out
+  '';
+
+  # A lock made with an older renv restores, and the library holds the renv
+  # version the lock records.
+  old-renv-runs = pkgs.runCommand "old-renv-runs" { } ''
+    ${oldRenv.env}/bin/Rscript -e '
+      stopifnot(packageVersion("renv") == "1.2.3")
+      stopifnot(nzchar(praise::praise()))
+      stopifnot(is.function(BiocGenerics::combine))
+    '
     touch $out
   '';
 

@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "renvLock": "18954bcf563ef78852f77d7a8e20781e7e9851386d634347c01c76fcd9e32687",
+  "r": "4.6.1",
+  "bioconductor": "3.23",
+  "packages": [
+    {
+      "name": "BiocGenerics",
+      "version": "0.58.1",
+      "cellarName": "BiocGenerics_0.58.1.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "BiocGenerics/BiocGenerics_0.58.1.tar.gz",
+        "url": "https://bioconductor.org/packages/3.23/bioc/src/contrib/BiocGenerics_0.58.1.tar.gz",
+        "mirrors": ["https://bioconductor.org/packages/3.23/bioc/src/contrib/Archive/BiocGenerics/BiocGenerics_0.58.1.tar.gz", "https://bioconductor.org/packages/3.23/bioc/src/contrib/Archive/BiocGenerics/0.58.1/BiocGenerics_0.58.1.tar.gz"],
+        "hash": "sha256-aRFVnwsrWgcIHNIbZziqTGBIUJsjQlzD66/AtMsBGpg="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "BiocManager",
+      "version": "1.30.27",
+      "cellarName": "BiocManager_1.30.27.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "BiocManager/BiocManager_1.30.27.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/BiocManager_1.30.27.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/BiocManager/BiocManager_1.30.27.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/BiocManager/1.30.27/BiocManager_1.30.27.tar.gz", "https://R-Forge.R-project.org/src/contrib/BiocManager_1.30.27.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/BiocManager/BiocManager_1.30.27.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/BiocManager/1.30.27/BiocManager_1.30.27.tar.gz"],
+        "hash": "sha256-rL/c8JYCyCeQhVVspUUxwq2grDwXddVM4sO5o9wD+7U="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "generics",
+      "version": "0.1.4",
+      "cellarName": "generics_0.1.4.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "generics/generics_0.1.4.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/generics_0.1.4.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/Archive/generics/generics_0.1.4.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/generics/0.1.4/generics_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/generics_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/generics/generics_0.1.4.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/generics/0.1.4/generics_0.1.4.tar.gz"],
+        "hash": "sha256-u+laCXeS04/Dt+Z3c4rxuVtm6l5QF+M7i+rGpgiNCAE="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "praise",
+      "version": "1.0.0",
+      "cellarName": "praise_094469afaf033af00aeb46527970f1db22f4d49d.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "praise/praise_094469afaf033af00aeb46527970f1db22f4d49d.tar.gz",
+        "url": "https://api.github.com/repos/rladies/praise/tarball/094469afaf033af00aeb46527970f1db22f4d49d",
+        "mirrors": [],
+        "hash": "sha256-DbiAUggNMaOZiq5PexWLlOp+IOWkD0vcWM8aLaagDVI="
+      },
+      "local": null,
+      "outside": null
+    },
+    {
+      "name": "renv",
+      "version": "1.2.3",
+      "cellarName": "renv_1.2.3.tar.gz",
+      "convert": "none",
+      "download": {
+        "path": "renv/renv_1.2.3.tar.gz",
+        "url": "https://cloud.r-project.org/src/contrib/Archive/renv/renv_1.2.3.tar.gz",
+        "mirrors": ["https://cloud.r-project.org/src/contrib/renv_1.2.3.tar.gz", "https://cloud.r-project.org/src/contrib/Archive/renv/1.2.3/renv_1.2.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/renv_1.2.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/renv/renv_1.2.3.tar.gz", "https://R-Forge.R-project.org/src/contrib/Archive/renv/1.2.3/renv_1.2.3.tar.gz"],
+        "hash": "sha256-9GK1Ws5UNra+0Y4BrBJnZJ/Blq2FBfVchUZwTtoQS/s="
+      },
+      "local": null,
+      "outside": null
+    }
+  ],
+  "inline": [],
+  "outputs": {}
+}

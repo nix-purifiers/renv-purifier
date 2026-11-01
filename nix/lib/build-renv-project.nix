@@ -190,14 +190,16 @@ let
     )
   );
 
-  renvPackage = lib.findFirst (package: package.name == "renv") null lock.packages;
-  renvTarball =
-    if renvPackage != null then
-      "${cellar}/cellar/renv/${renvPackage.cellarName}"
-    else
-      throw "renv-purifier: renv.lock has no record for renv itself; run renv::snapshot() in the project.";
-
   majorMinor = version: lib.versions.majorMinor version;
+
+  # R CMD INSTALL writes the install time into the Built field of each
+  # package, and nixpkgs fixes it the same way for its own R packages.
+  installFlags = "--built-timestamp='1970-01-01 00:00:00 UTC'";
+
+  # R CMD INSTALL compiles each package in a randomly named directory, which
+  # the debug information records. The library keeps its shared objects
+  # under library/, where the default strip list does not look.
+  stripDebugList = [ "library" ];
 
   # renv::restore() reads the cellar and the Bioconductor configuration of
   # the lock, and nothing else, so it runs offline.
@@ -209,6 +211,10 @@ let
     export RENV_CONFIG_PAK_ENABLED=FALSE
     export RENV_CONFIG_SANDBOX_ENABLED=FALSE
     export RENV_CONFIG_AUTOLOADER_ENABLED=FALSE
+    # Kept source records the randomly named directory each package is
+    # compiled in, so the library would differ from build to build.
+    export RENV_CONFIG_INSTALL_KEEP_SOURCE=FALSE
+    export RENV_PURIFIER_INSTALL_OPTS=${lib.escapeShellArg installFlags}
     ${lib.optionalString (lock.bioconductor != null) ''
       export BIOCONDUCTOR_CONFIG_FILE="${cellar}/bioconductor/config.yaml"
     ''}
@@ -230,10 +236,10 @@ let
     buildPhase = ''
       runHook preBuild
       ${restoreEnvironment}
-      mkdir -p "$TMPDIR/renv-lib" "$out/library"
-      R CMD INSTALL --no-test-load --library="$TMPDIR/renv-lib" ${renvTarball}
+      mkdir -p "$out/library"
       R --vanilla --no-echo -e '
-        .libPaths(c(file.path(Sys.getenv("TMPDIR"), "renv-lib"), .libPaths()))
+        .libPaths(c("${rPackages.renv}/library", .libPaths()))
+        options(install.opts = Sys.getenv("RENV_PURIFIER_INSTALL_OPTS"))
         renv::restore(
           project = getwd(),
           library = file.path(Sys.getenv("out"), "library"),
@@ -244,10 +250,8 @@ let
       runHook postBuild
     '';
     dontInstall = true;
-    # R packages carry no build references worth stripping, and their
-    # compiled code keeps the runtime paths the linker gave it.
-    dontStrip = true;
-    passthru = { inherit cellar lock; };
+    inherit stripDebugList;
+    passthru = { inherit cellar lock runtimePaths; };
   };
 
   outputPackage = lock.outputs.package or null;
@@ -276,6 +280,14 @@ let
         echo "renv-purifier: the lock names ${outputPackage.tarball}, which R CMD build did not produce; run renv-purifier lock" >&2
         exit 1
       fi
+      # R CMD build writes the build time into the Packaged field and the
+      # tarball, so the release is repacked with fixed times and owners.
+      mkdir "$TMPDIR/release"
+      tar -xzf ${outputPackage.tarball} -C "$TMPDIR/release"
+      sed -i 's/^Packaged: .*/Packaged: 1970-01-01 00:00:00 UTC; nixbld/' \
+        "$TMPDIR/release/${outputPackage.name}/DESCRIPTION"
+      tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
+        -C "$TMPDIR/release" -cf - ${outputPackage.name} | gzip -n > ${outputPackage.tarball}
       runHook postBuild
     '';
     checkPhase = ''
@@ -290,10 +302,15 @@ let
       runHook preInstall
       mkdir -p "$out/library"
       cp ${outputPackage.tarball} "$out/"
-      R CMD INSTALL --library="$out/library" ${outputPackage.tarball}
+      # R CMD INSTALL unpacks a tarball into a randomly named directory,
+      # which the help pages record, so the package installs from a fixed
+      # one.
+      mkdir -p "$TMPDIR/unpacked"
+      tar -xzf ${outputPackage.tarball} -C "$TMPDIR/unpacked"
+      R CMD INSTALL ${installFlags} --library="$out/library" "$TMPDIR/unpacked/${outputPackage.name}"
       runHook postInstall
     '';
-    dontStrip = true;
+    inherit stripDebugList;
     passthru = {
       inherit library cellar lock;
       # The files of the package by file name, such as

@@ -23,7 +23,10 @@ in
   # The shell `renv-purifier restore` runs renv::restore() in: R, the C,
   # C++ and Fortran toolchain, make, pkg-config and the system libraries of
   # the locked packages, as the sandboxed build of the library has them.
-  shell = pkgs.mkShell { inputsFrom = [ built.library ]; };
+  shell = pkgs.mkShell {
+    inputsFrom = [ built.library ];
+    env.NIX_LDFLAGS = built.library.runtimePaths;
+  };
   # The project's own package; evaluating it fails for a project that is not
   # an R package.
   package = built.package or (throw "renv-purifier: the project is not an R package");
