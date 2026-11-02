@@ -78,7 +78,8 @@ directly:
 ```nix
 # flake.nix
 {
-  inputs.renv-purifier.url = "github:nix-purifiers/renv-purifier";
+  inputs.renv-purifier.url =
+    "github:nix-purifiers/renv-purifier";
   inputs.nixpkgs.follows = "renv-purifier/nixpkgs";
 
   outputs =
@@ -92,7 +93,8 @@ directly:
     in
     {
       packages.${system}.default =
-        (pkgs.renv-purifier.buildRenvProject { src = ./.; })
+        (pkgs.renv-purifier.buildRenvProject { src =
+          ./.; })
         .packages.env;
     };
 }
