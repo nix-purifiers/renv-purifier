@@ -279,9 +279,10 @@ get R with the packages it locks, clone it, lock it, and build its library
 from its directory:
 
 ```zsh
+nix shell 'github:nix-purifiers/renv-purifier'
 git clone https://github.com/r-hub/cransays
 cd cransays
-nix run github:nix-purifiers/renv-purifier -- lock
+renv-purifier lock
 nix build --impure --expr 'let
   purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
   pkgs = import purifier.inputs.nixpkgs {
