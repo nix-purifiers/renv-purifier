@@ -96,7 +96,8 @@ directly:
   inputs.renv-purifier.url = "github:nix-purifiers/renv-purifier";
   inputs.nixpkgs.follows = "renv-purifier/nixpkgs";
 
-  outputs = { nixpkgs, renv-purifier, ... }:
+  outputs =
+    { nixpkgs, renv-purifier, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -106,7 +107,8 @@ directly:
     in
     {
       packages.${system}.default =
-        (pkgs.renv-purifier.buildRenvProject { src = ./.; }).packages.env;
+        (pkgs.renv-purifier.buildRenvProject { src = ./.; })
+        .packages.env;
     };
 }
 ```
@@ -161,15 +163,15 @@ For an ad hoc build, the builder can also be evaluated directly from the
 project root. Replace the example package name with one from your project:
 
 ```zsh
-nix build --impure --expr '
-  let
-    purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
-    pkgs = import purifier.inputs.nixpkgs {
-      system = builtins.currentSystem;
-      overlays = [ purifier.overlays.default ];
-    };
-  in
-  (pkgs.renv-purifier.buildRenvProject { src = ./.; }).packages.env'
+nix build --impure --expr 'let
+  purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
+  pkgs = import purifier.inputs.nixpkgs {
+    system = builtins.currentSystem;
+    overlays = [ purifier.overlays.default ];
+  };
+in
+(pkgs.renv-purifier.buildRenvProject { src = ./.; })
+.packages.env'
 ```
 
 This uses the purifier's pinned nixpkgs, matching the lock command above.
@@ -295,15 +297,14 @@ from its directory:
 git clone https://github.com/r-hub/cransays
 cd cransays
 nix run github:nix-purifiers/renv-purifier -- lock
-nix build --impure --expr '
-  let
-    purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
-    pkgs = import purifier.inputs.nixpkgs {
-      system = builtins.currentSystem;
-      overlays = [ purifier.overlays.default ];
-    };
-  in
-  (pkgs.renv-purifier.buildRenvProject { src = ./.; }).interactive'
+nix build --impure --expr 'let
+  purifier = builtins.getFlake "github:nix-purifiers/renv-purifier";
+  pkgs = import purifier.inputs.nixpkgs {
+    system = builtins.currentSystem;
+    overlays = [ purifier.overlays.default ];
+  };
+in
+(pkgs.renv-purifier.buildRenvProject { src = ./.; }).interactive'
 R_LIBS_SITE="$PWD/result/library" result/R/bin/R
 ```
 
