@@ -320,8 +320,6 @@ packages, in place of `packages.env`.
 ## Credits
 
 The purifier idea was inspired by nixcloud's
-[cargo (libnix)](https://github.com/nixcloud/cargo), and renv-purifier
-follows the design of
-[sbt-purifier](https://github.com/nix-purifiers/sbt-purifier) and the
-layout of [uv-purifier](https://github.com/nix-purifiers/uv-purifier). It
-is MIT-licensed.
+[cargo (libnix)](https://github.com/nixcloud/cargo).
+
+Released under the MIT license; see [LICENSE](LICENSE).
