@@ -27,6 +27,9 @@ renvLock <- tryCatch(
   jsonlite::read_json(renvLockPath),
   error = function(error) fail("%s is not valid JSON: %s", renvLockPath, conditionMessage(error))
 )
+previous <- if (file.exists(lockPath))
+  tryCatch(jsonlite::read_json(lockPath), error = function(error) NULL) else NULL
+previousPackages <- if (is.list(previous) && is.list(previous$packages)) previous$packages else list()
 
 workdir <- tempfile("renv-purifier-")
 dir.create(workdir)
@@ -101,7 +104,7 @@ entryFor <- function(fetch) {
 # the download came from, which depends on where the package was found. Nix
 # derives every other download location from renv.lock (nix/lib/lock.nix).
 # A package from a directory has no download and no entry.
-lockPackage <- function(record) {
+lockPackage <- function(record, previous = NULL) {
   plan <- tryCatch(planRecord(record, context), error = function(error) fail("%s", conditionMessage(error)))
   if (is.null(plan$fetch))
     return(NULL)
@@ -124,7 +127,7 @@ lockPackage <- function(record) {
   if (fallback)
     list(fallback = "git", hash = entry$hash)
   else if (source %in% c("repository", "cran", "bioconductor"))
-    list(hash = entry$hash, url = entry$url)
+    repositoryLockEntry(entry, plan$fetch, previous)
   else
     list(hash = entry$hash)
 }
@@ -135,7 +138,7 @@ records <- renvLock$Packages
 names <- setdiff(sort(names(records), method = "radix"), basePackages)
 packages <- setNames(list(), character())
 for (name in names) {
-  entry <- lockPackage(records[[name]])
+  entry <- lockPackage(records[[name]], previousPackages[[name]])
   if (!is.null(entry))
     packages[[name]] <- entry
 }

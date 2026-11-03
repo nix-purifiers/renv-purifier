@@ -222,8 +222,32 @@ let
           };
         };
       };
-      fromRepository = (file (entry.url or null) "${name}/${cellarName}" "none") // {
+      # CRAN moves superseded versions into Archive. All locations still
+      # have to serve the captured bytes; no package version is re-resolved.
+      repositoryFile = file (entry.url or null) "${name}/${cellarName}" "none";
+      repositoryOrigin =
+        if builtins.isString (entry.url or null) then
+          builtins.match "(.*)/src/contrib/.*" entry.url
+        else
+          null;
+      repositoryUrls =
+        if repositoryOrigin == null then
+          [ ]
+        else
+          let
+            base = builtins.head repositoryOrigin;
+            archive = "${name}_${record.Version}.tar.gz";
+          in
+          [
+            "${base}/src/contrib/${archive}"
+            "${base}/src/contrib/Archive/${name}/${archive}"
+            "${base}/src/contrib/Archive/${name}/${record.Version}/${archive}"
+          ];
+      fromRepository = repositoryFile // {
         needsUrl = true;
+        entry = repositoryFile.entry // {
+          mirrors = builtins.filter (url: url != (entry.url or null)) repositoryUrls;
+        };
       };
       localPath = record.RemoteUrl or "";
     in
