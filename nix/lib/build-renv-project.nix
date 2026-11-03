@@ -57,6 +57,7 @@
   zstd,
   python3,
   writeText,
+  writeShellScriptBin,
   # The R that installs and runs the packages.
   R,
   # nixpkgs' R packages: the renv that runs the restore, and the system
@@ -228,6 +229,30 @@ let
     map (drv: "-rpath ${libraryOutput drv}/lib") (lib.unique (linkedInputs ++ nativeInputs))
   );
 
+  # R and pkg-config, for the builds that install packages. On macOS the
+  # configure scripts of r-lib packages, such as textshaping and ragg, ask
+  # pkg-config for the flags of a static link (`pkg-config --static`), the
+  # way CRAN's binary packages link. A static link needs the pkg-config file
+  # of every private dependency, such as glib for harfbuzz, which nixpkgs'
+  # R packages do not list, so the flags come back empty and the package
+  # does not load. The builds link shared libraries, so on darwin a
+  # pkg-config first on the PATH leaves out `--static` and answers as on
+  # Linux. nixpkgs' pkg-config still sets the search path.
+  buildTools =
+    lib.optional stdenv.hostPlatform.isDarwin (
+      writeShellScriptBin "pkg-config" ''
+        args=()
+        for arg in "$@"; do
+          [ "$arg" = --static ] || args+=("$arg")
+        done
+        exec ${pkg-config}/bin/pkg-config "''${args[@]}"
+      ''
+    )
+    ++ [
+      R
+      pkg-config
+    ];
+
   majorMinor = version: lib.versions.majorMinor version;
 
   # R CMD INSTALL writes the install time into the Built field of each
@@ -262,11 +287,7 @@ let
   library = stdenv.mkDerivation {
     name = "renv-library";
     src = filteredSrc;
-    nativeBuildInputs = [
-      R
-      pkg-config
-    ]
-    ++ nativeInputs;
+    nativeBuildInputs = buildTools ++ nativeInputs;
     buildInputs = linkedInputs;
     env.NIX_LDFLAGS = runtimePaths;
     dontConfigure = true;
@@ -308,11 +329,7 @@ let
         pname = "${output.name}-release";
         inherit (output) version;
         src = filteredSrc;
-        nativeBuildInputs = [
-          R
-          pkg-config
-        ]
-        ++ nativeInputs;
+        nativeBuildInputs = buildTools ++ nativeInputs;
         buildInputs = linkedInputs;
         dontConfigure = true;
         buildPhase = ''
@@ -357,11 +374,7 @@ let
         pname = output.name;
         inherit (output) version;
         src = release;
-        nativeBuildInputs = [
-          R
-          pkg-config
-        ]
-        ++ nativeInputs;
+        nativeBuildInputs = buildTools ++ nativeInputs;
         buildInputs = linkedInputs;
         env.NIX_LDFLAGS = runtimePaths;
         # R CMD INSTALL unpacks a tarball into a randomly named directory,
@@ -379,6 +392,37 @@ let
           mkdir -p "$HOME" "$out/library"
           export R_LIBS_SITE="${library}/library"
           R CMD INSTALL ${installFlags} --library="$out/library" "$TMPDIR/unpacked/${output.name}"
+        ''
+        # The help pages record that fixed directory, in the path of each Rd
+        # file and in its source reference. The Linux sandbox always builds
+        # in /build, but on darwin the build directory is
+        # /nix/var/nix/builds/nix-<pid>-<n>, new for every build, so the
+        # paths are written again as under /build, as on Linux.
+        + lib.optionalString stdenv.hostPlatform.isDarwin ''
+          R --vanilla --no-echo -e '
+            help <- file.path(Sys.getenv("out"), "library", "${output.name}", "help")
+            if (file.exists(file.path(help, "paths.rds"))) {
+              from <- normalizePath(Sys.getenv("TMPDIR"))
+              rewrite <- function(path) sub(from, "/build", path, fixed = TRUE)
+              paths <- readRDS(file.path(help, "paths.rds"))
+              first <- attr(paths, "first") - nchar(from) + nchar("/build")
+              saveRDS(structure(rewrite(paths), first = first), file.path(help, "paths.rds"))
+              base <- file.path(help, "${output.name}")
+              names <- as.character(names(readRDS(paste0(base, ".rdx"))$variables))
+              db <- new.env()
+              lazyLoad(base, envir = db)
+              db <- lapply(mget(names, envir = db), function(rd) {
+                attr(rd, "Rdfile") <- rewrite(attr(rd, "Rdfile"))
+                srcfile <- attr(attr(rd, "srcref"), "srcfile")
+                srcfile$filename <- rewrite(srcfile$filename)
+                srcfile$wd <- rewrite(srcfile$wd)
+                rd
+              })
+              tools:::makeLazyLoadDB(db, base)
+            }
+          '
+        ''
+        + ''
           runHook postInstall
         '';
         inherit stripDebugList;
@@ -411,11 +455,7 @@ let
       stdenv.mkDerivation {
         name = "${output.name}-check";
         src = release;
-        nativeBuildInputs = [
-          R
-          pkg-config
-        ]
-        ++ nativeInputs;
+        nativeBuildInputs = buildTools ++ nativeInputs;
         buildInputs = linkedInputs;
         env.NIX_LDFLAGS = runtimePaths;
         dontUnpack = true;
