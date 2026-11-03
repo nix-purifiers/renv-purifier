@@ -169,7 +169,9 @@ stopifnot(
   identical(repositoryLockEntry(archived, list(urls = urls), old), old),
   identical(repositoryLockEntry(archived, list(urls = urls), list(hash = "sha256-different", url = urls[[1]])), archived),
   identical(repositoryLockEntry(archived, list(urls = urls), list(hash = "sha256-same", url = "https://unrelated.example/pkg")), archived),
-  identical(repositoryLockEntry(archived, list(urls = urls)), archived)
+  identical(repositoryLockEntry(archived, list(urls = urls)), archived),
+  identical(repositoryLockEntry(archived, list(urls = c(urls, "https://mirror.example/src/contrib/pkg_1.0.tar.gz")),
+    list(hash = "sha256-same", url = "https://mirror.example/src/contrib/pkg_1.0.tar.gz")), archived)
 )
 
 cat("records.R: all plans match\n")
