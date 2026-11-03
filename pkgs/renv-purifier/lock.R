@@ -151,8 +151,10 @@ lock <- list(
 
 # The hash of the lockfile's own content: the SHA-256 of the JSON that Nix's
 # builtins.toJSON writes for every field but contentHash. Nix computes it,
-# so the hash is the one the Nix library checks.
-unhashed <- file.path(workdir, "unhashed.json")
+# so the hash is the one the Nix library checks. The expression names the
+# file with a Nix path, so its physical path: on macOS, TMPDIR ends in a
+# slash and goes through the /var symlink, and a "//" ends a Nix path.
+unhashed <- file.path(normalizePath(workdir), "unhashed.json")
 jsonlite::write_json(lock, unhashed, auto_unbox = TRUE)
 expression <- sprintf(
   'builtins.hashString "sha256" (builtins.toJSON (builtins.fromJSON (builtins.readFile %s)))',

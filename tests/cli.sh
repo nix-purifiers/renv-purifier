@@ -49,9 +49,11 @@ fails_with() {
   fi
 }
 
-# A copy of the hello fixture under a new name.
+# A copy of the hello fixture under a new name. -R copies the symlink
+# `prefetch` left in .renv-purifier; the cp -r of macOS copies what it
+# points to, the read-only library.
 copy_hello() {
-  cp -r "$work/hello" "$work/$1"
+  cp -R "$work/hello" "$work/$1"
   rm -rf "$work/$1/renv/library" "$work/$1/.renv-purifier"
 }
 
@@ -125,7 +127,11 @@ fails_with "renv.lock changed after \`renv-purifier lock\` ran. Run \`renv-purif
 
 echo "== mistakes name their fix"
 copy_hello conflict
-sed -i '0,/"Packages": {/s//"Packages": {\n<<<<<<< Updated upstream/' "$work/conflict/renv.lock"
+# Through a copy, and with the newline escaped, as the sed of macOS needs.
+# renv.lock opens "Packages" once.
+sed 's/"Packages": {/&\
+<<<<<<< Updated upstream/' "$work/conflict/renv.lock" > "$work/conflict.renv.lock"
+mv "$work/conflict.renv.lock" "$work/conflict/renv.lock"
 fails_with "is not valid JSON (look for merge conflict markers)" "$cli" lock --project "$work/conflict"
 
 copy_hello malformed
