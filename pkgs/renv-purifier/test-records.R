@@ -160,4 +160,18 @@ stopifnot(identical(missing$convert, "external"))
 # A source renv-purifier does not know.
 stopifnot(fails(plan(Package = "x", Version = "1", Source = "Mystery"), "has source Mystery, which renv-purifier does not know"))
 
+# An unchanged package may move from the current repository to its archive.
+# Freshly verified equal bytes must keep the original allowed URL stable.
+urls <- repositoryUrls("https://cran.example", "pkg", "1.0")
+old <- list(hash = "sha256-same", url = urls[[1]])
+archived <- list(hash = "sha256-same", url = urls[[2]])
+stopifnot(
+  identical(repositoryLockEntry(archived, list(urls = urls), old), old),
+  identical(repositoryLockEntry(archived, list(urls = urls), list(hash = "sha256-different", url = urls[[1]])), archived),
+  identical(repositoryLockEntry(archived, list(urls = urls), list(hash = "sha256-same", url = "https://unrelated.example/pkg")), archived),
+  identical(repositoryLockEntry(archived, list(urls = urls)), archived),
+  identical(repositoryLockEntry(archived, list(urls = c(urls, "https://mirror.example/src/contrib/pkg_1.0.tar.gz")),
+    list(hash = "sha256-same", url = "https://mirror.example/src/contrib/pkg_1.0.tar.gz")), archived)
+)
+
 cat("records.R: all plans match\n")

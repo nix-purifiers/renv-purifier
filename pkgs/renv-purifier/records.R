@@ -20,6 +20,17 @@ repositoryUrls <- function(repository, package, version) {
   )
 }
 
+# Preserve current/archive moves within one repository when freshly
+# downloaded bytes match. A change of repository host keeps the new URL.
+repositoryLockEntry <- function(entry, fetch, previous = NULL) {
+  url <- entry$url
+  if (is.list(previous) && identical(previous$hash, entry$hash) &&
+      is.character(previous$url) && length(previous$url) == 1L && previous$url %in% fetch$urls &&
+      identical(sub("/src/contrib/.*$", "", previous$url), sub("/src/contrib/.*$", "", entry$url)))
+    url <- previous$url
+  list(hash = entry$hash, url = url)
+}
+
 origin <- function(host, default) {
   host <- host %||% default
   if (grepl("://", host, fixed = TRUE)) host else paste0("https://", host)

@@ -178,6 +178,15 @@ in
     assert lib.elem "git" kinds && lib.elem "file" kinds && !lib.elem "other" kinds;
     runCommand "hello-fetches" { } "touch $out";
 
+  repository-archive-mirrors =
+    let
+      entry = lib.findFirst (entry: entry.renv.package == "openssl") null hello.fetches;
+    in
+    assert entry != null;
+    assert lib.any (url: lib.hasInfix "/src/contrib/Archive/openssl/" url) entry.mirrors;
+    assert !(lib.elem entry.url entry.mirrors);
+    runCommand "repository-archive-mirrors" { } "touch $out";
+
   sources-runs = runCommand "sources-runs" { } ''
     ${sources.packages.env}/bin/Rscript ${./fixtures/sources/greet.R} > output
     grep -qx 'Hi, you' output
