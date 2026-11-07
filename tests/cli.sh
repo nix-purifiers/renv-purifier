@@ -98,11 +98,16 @@ test -L "$work/packaging/.renv-purifier/prefetch"
 echo "== a renv.lock outside the project"
 copy_hello toolexternal
 rm "$work/toolexternal/renv-purifier.lock.json"
+# Compare two fresh captures. Historical lock URLs can legitimately differ
+# after a repository moves unchanged bytes into its archive; seeded relocks
+# above separately check preservation of those historical URLs.
+"$cli" lock --project "$work/toolexternal"
+mv "$work/toolexternal/renv-purifier.lock.json" "$work/packaging/tool.baseline.lock.json"
 mv "$work/toolexternal/renv.lock" "$work/packaging/tool.renv.lock"
 echo '{"R":{"Version":"4.6.1","Repositories":[]},"Packages":{}}' > "$work/toolexternal/renv.lock"
 RENV_PURIFIER_TOOL_LOCKFILE="$work/packaging/tool.renv.lock" "$cli" lock --project "$work/toolexternal" \
   --lockfile "$work/packaging/tool.lock.json"
-cmp "$root/tests/fixtures/hello/renv-purifier.lock.json" "$work/packaging/tool.lock.json"
+cmp "$work/packaging/tool.baseline.lock.json" "$work/packaging/tool.lock.json"
 cmp "$root/tests/fixtures/hello/renv.lock" "$work/packaging/tool.renv.lock"
 grep -q '"Packages": {}' "$work/toolexternal/renv.lock" || grep -q '"Packages":{}' "$work/toolexternal/renv.lock"
 
