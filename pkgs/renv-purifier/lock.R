@@ -102,7 +102,7 @@ entryFor <- function(fetch) {
 # What the lockfile records for one package: the hash of its download,
 # which renv.lock cannot give, and, for a package from a repository, the URL
 # the download came from, which depends on where the package was found. Nix
-# derives every other download location from renv.lock (nix/lib/lock.nix).
+# derives every other download location from renv.lock (lib-overlays/default/lock.nix).
 # A package from a directory has no download and no entry.
 lockPackage <- function(record, previous = NULL) {
   plan <- tryCatch(planRecord(record, context), error = function(error) fail("%s", conditionMessage(error)))

@@ -92,7 +92,7 @@ let
     chmod -R u+w ${name}
     (cd ${name} && ${case.break})
     if nix-instantiate --eval --strict --expr \
-        "let lock = import ${../nix/lib}/read-lock.nix { lib = import ${pkgs.path}/lib; } { src = $PWD/${name}; }; in if lock.problems != [ ] then throw (builtins.concatStringsSep \"\n\" lock.problems) else builtins.length lock.entries" \
+        "let lock = import ${../lib-overlays/default}/read-lock.nix { lib = import ${pkgs.path}/lib; } { src = $PWD/${name}; }; in if lock.problems != [ ] then throw (builtins.concatStringsSep \"\n\" lock.problems) else builtins.length lock.entries" \
         > ${name}.out 2> ${name}.err; then
       ${
         if case.expect == null then

@@ -34,8 +34,8 @@ let
   lockArgs =
     lib.optionalAttrs (lockFile != null) { lockFile = /. + lockFile; }
     // lib.optionalAttrs (renvLock != null) { renvLock = /. + renvLock; };
-  readLock = import ./read-lock.nix { inherit lib; };
-  buildRenvProject = pkgs.callPackage ./build-renv-project.nix { purifier = purifierLib; };
+  readLock = import ../../lib-overlays/default/read-lock.nix { inherit lib; };
+  buildRenvProject = pkgs.callPackage ../build-renv-project { purifier = purifierLib; };
   built = buildRenvProject ({ src = root; } // lockArgs);
 in
 {

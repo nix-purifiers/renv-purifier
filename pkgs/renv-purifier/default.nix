@@ -7,6 +7,7 @@
 # the nix-build, nix-shell, nix-instantiate and nix-hash of the Nix
 # installation it runs on.
 {
+  lib,
   path,
   writeShellApplication,
   rWrapper,
@@ -18,6 +19,14 @@
   gzip,
 }:
 let
+  runtimeSource = lib.fileset.toSource {
+    root = ../..;
+    fileset = lib.fileset.unions [
+      ../../lib-overlays/default
+      ../build-renv-project
+      ./cli.nix
+    ];
+  };
   # The lock run reads and writes JSON with jsonlite.
   R = rWrapper.override { packages = [ rPackages.jsonlite ]; };
 
@@ -39,12 +48,12 @@ writeShellApplication {
     gzip
   ];
   runtimeEnv = {
-    RENV_PURIFIER_LIB = ../../nix/lib;
+    RENV_PURIFIER_LIB = "${runtimeSource}/pkgs/renv-purifier";
     # lock.R and the records.R it reads, from this directory.
     RENV_PURIFIER_SCRIPTS = ./.;
     RENV_PURIFIER_NIXPKGS = path;
     RENV_PURIFIER_LIBRARY = purifier;
-    RENV_PURIFIER_FORMAT = toString (import ../../nix/lib/lock-version.nix);
+    RENV_PURIFIER_FORMAT = toString (import ../../lib-overlays/default/lock-version.nix);
   };
   text = builtins.readFile ./renv-purifier.sh;
   meta.description = "Locks the downloads of an renv project for sandboxed Nix builds";
