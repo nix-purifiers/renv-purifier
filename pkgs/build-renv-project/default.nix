@@ -95,7 +95,7 @@
   srcFilter ? null,
 }:
 let
-  read = import ./lock.nix {
+  read = import ../../lib-overlays/default/lock.nix {
     inherit
       lib
       src

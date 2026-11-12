@@ -125,7 +125,7 @@ command. `buildRenvProject` returns these attributes:
 `renv.lock` and the purifier lockfile into the lock shape every purifier
 shares: `entries`, `outputs` and `problems`.
 
-The arguments, documented in `nix/lib/build-renv-project.nix`, are `src`,
+The arguments, documented in `pkgs/build-renv-project/default.nix`, are `src`,
 `lockFile`, `renvLock`, `fetchers` (passed to the purifier library's
 `fetchEntry`, for credentials or a company mirror), `localPackages`,
 `extraBuildInputs`, `extraNativeBuildInputs` and `srcFilter`. `renv-purifier.overrideScope`
